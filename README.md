@@ -5,7 +5,7 @@
 
 #### Frustratingly simple ETL for Postgres
 
-[![ElV2 License](https://badgen.net/badge/License/Elv2/green?icon=github)](https://github.com/PeerDB-io/enterprise/blob/main/LICENSE.md)
+[![ElV2 License](https://badgen.net/badge/License/Elv2/green?icon=github)](https://github.com/PeerDB-io/peerdb-enterprise/blob/main/LICENSE.md)
 [![Slack Community](https://img.shields.io/badge/slack-peerdb-brightgreen.svg?logo=slack)](https://join.slack.com/t/peerdb-public/shared_invite/zt-1wo9jydev-EXInbMtCtpAKFFWdi7QvLQ)
 
 </div>
@@ -20,7 +20,7 @@ At PeerDB, we are building a fast, simple and the most cost effective way to str
 
 PeerDB itself has 5 main services:
 
-1. `flow-worker`: The service that actually runs mirrors and does all the data movement. Written in Golang, source code [here](https://github.com/PeerDB-io/peerdb/tree/main/nexus).
+1. `flow-worker`: The service that actually runs mirrors and does all the data movement. Written in Golang, source code [here](https://github.com/PeerDB-io/peerdb/tree/main/flow).
 2. `flow-snapshot-worker`: Helps `flow-worker` perform initial snapshot of mirrors. Needs to be available at all times during this phase of a mirror. Shares source code with `flow-worker`.
 3. `flow-api`: Hosts the gRPC API that actually creates and manages mirrors. `peerdb-ui` and `peerdb-server` depend on this. Shares source code with `flow-worker` and `flow-snapshot-worker`.
 4. `peerdb-ui`: Intuitive web UI for interacting with peers and mirrors. Written in Next.js, source code [here](https://github.com/PeerDB-io/peerdb/tree/main/ui).
