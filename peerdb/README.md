@@ -225,6 +225,7 @@ Install PeerDB along with Temporal.
 | temporal-deploy.grafana.enabled | bool | `false` |  |
 | temporal-deploy.mysql.enabled | bool | `false` |  |
 | temporal-deploy.prometheus.enabled | bool | `false` |  |
+| temporal-deploy.schema.createDatabase.enabled | bool | `false` |  |
 | temporal-deploy.schema.setup.enabled | bool | `false` |  |
 | temporal-deploy.schema.update.enabled | bool | `false` |  |
 | temporal-deploy.server.config.persistence.default.driver | string | `"sql"` |  |

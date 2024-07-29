@@ -128,7 +128,7 @@ temporal:
     image:
       repository: temporalio/admin-tools
       # -- This should be set from the helm values for temporal dependency from the main chart
-      tag: 1.24.2
+      tag: 1.24.2.1-tctl-1.18.1-cli-0.13.2
       pullPolicy: IfNotPresent
 
 

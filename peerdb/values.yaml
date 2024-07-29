@@ -576,6 +576,8 @@ temporal-deploy:
       enabled: false
     update:
       enabled: false
+    createDatabase:
+      enabled: false
 
 datadog:
   # -- Whether to deploy datadog, pulled from `DATADOG_ENABLED` from .env

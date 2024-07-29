@@ -21,4 +21,6 @@
 .idea/
 *.tmproj
 .vscode/
-peerdb-pg-setup
+pgSetup/peerdb-pg-setup
+images/
+pgSetup/pgSetup
