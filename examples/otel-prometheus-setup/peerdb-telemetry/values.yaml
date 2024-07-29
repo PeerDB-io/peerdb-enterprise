@@ -1,0 +1,29 @@
+collector:
+  config:
+    exporters:
+      prometheus:
+        endpoint: 0.0.0.0:9090
+        namespace: peerdb
+    service:
+      pipelines:
+        metrics:
+          exporters:
+            - prometheus
+  image:
+    repository: "otel/opentelemetry-collector-contrib"
+  mode: deployment
+  ports:
+    prom-export:
+      enabled: true
+      containerPort: 9090
+      servicePort: 9090
+      protocol: TCP
+
+prometheus:
+  extraScrapeConfigs: |
+    - job_name: 'peerdb'
+      static_configs:
+        - targets: ['peerdb-telemetry-collector.telemetry:9090']
+  server:
+    service:
+      type: LoadBalancer

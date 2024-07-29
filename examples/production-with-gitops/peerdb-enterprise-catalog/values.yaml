@@ -1,0 +1,48 @@
+catalog:
+  credentials:
+    default:
+      database: peerdb_temporal
+      existingSecret: peerdb-db-admin
+      existingSecretEnabledFields:
+        user: true
+    visibility:
+      database: peerdb_temporal_visibility
+      existingSecret: peerdb-db-admin
+      existingSecretEnabledFields:
+        user: true
+    admin:
+      database: postgres
+      existingSecret: peerdb-db-admin
+      existingSecretEnabledFields:
+        user: true
+    catalog:
+      database: peerdb
+    pgHost: my-server.postgres.com
+    pgPort: '5432'
+    secretName: peerdb-db-admin
+    ssl:
+      enabled: true
+      type: Other
+      existingSecret: catalog-ssl-certificate
+  deploy:
+    enabled: false
+  temporal:
+    deploy:
+      enabled: true
+    tls:
+      enabled: true
+  schema:
+    setup:
+      enabled: true
+
+global:
+  peerdb:
+    enterprise:
+      saveCustomerValuesAsSecret: true
+
+# Let's assume that the below secretStore (already available) uses SSM as its backend and the secret is json encoded. Docs: https://external-secrets.io/latest/provider/aws-parameter-store/
+secretsStore:
+  name: peerdb-secret-store
+  kind: SecretStore
+  refreshInterval: "0"
+  keyPrefix: /path/to/peerdb/secrets/prefix

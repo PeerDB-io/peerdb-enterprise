@@ -1,0 +1,7 @@
+{{- define "authentication.secret.data" -}}
+{{- if .Values.authentication.enabled }}
+{{- $_ := required "Authentication username is a required value at (authentication.credentials.username)" .Values.authentication.credentials.username }}
+{{- $__ := required "Authentication password is a required value at (authentication.credentials.password)" .Values.authentication.credentials.password }}
+{{- end -}}
+{{ htpasswd .Values.authentication.credentials.username .Values.authentication.credentials.password }}
+{{- end -}}

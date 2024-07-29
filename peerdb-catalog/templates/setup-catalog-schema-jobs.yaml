@@ -1,0 +1,338 @@
+{{- $temporalValues := index .Values "temporal" }}
+{{- $credentialStore := .Values.credentials }}
+{{- if and .Values.schema.setup.enabled .Values.temporal.deploy.enabled .Release.IsInstall }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: temporal-schema-setup
+  labels:
+    app.kubernetes.io/name: temporal-schema-setup
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" }}
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+  annotations:
+    {{- if .Values.schema.setup.hook.enabled }}
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "0"
+    {{- if not .Values.schema.setup.debug }}
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+    {{- end }}
+    {{- end }}
+spec:
+  backoffLimit: {{ .Values.schema.setup.backoffLimit }}
+  template:
+    metadata:
+      name: temporal-schema-setup
+      labels:
+        app.kubernetes.io/name: temporal-schema-setup
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" }}
+        app.kubernetes.io/component: database
+        app.kubernetes.io/part-of: {{ .Chart.Name }}
+    spec:
+      restartPolicy: "OnFailure"
+      {{- with .Values.common.pods.affinity }}
+      affinity:
+      {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.common.pods.nodeSelector }}
+      nodeSelector:
+      {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.common.pods.tolerations }}
+      tolerations:
+      {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.common.pods.imagePullSecrets }}
+      imagePullSecrets:
+        {{- . | toYaml | nindent 10 }}
+      {{- end }}
+      initContainers:
+        {{- range $store := (list "default" "visibility") }}
+        {{- $storeConfig := index $credentialStore $store }}
+        - name: setup-{{ $store }}-schema
+          image: "{{ $temporalValues.admintools.image.repository }}:{{ $temporalValues.admintools.image.tag }}"
+
+          imagePullPolicy: {{ $temporalValues.admintools.image.pullPolicy }}
+          command: ['bash', '-c', 'while ! timeout 1 nc -vz "${SQL_HOST}" "${SQL_PORT}"; do sleep 1; done && temporal-sql-tool setup-schema -v 0.0']
+          env:
+            - name: SQL_PLUGIN
+              value: "postgres12"
+            - name: SQL_HOST
+              value: {{ $credentialStore.pgHost | quote }}
+            - name: SQL_PORT
+              value: {{ $credentialStore.pgPort | quote }}
+            - name: SQL_DATABASE
+              value: {{ $storeConfig.database | quote }}
+            - name: SQL_TLS
+              value: '{{ $temporalValues.tls.enabled }}'
+            {{- if $temporalValues.tls.enabled }}
+            - name: SQL_TLS_CA_FILE
+              value: /mounted/ca-file/certificate
+            {{- end }}
+            {{- if (or $storeConfig.user $storeConfig.existingSecret) }}
+            - name: SQL_USER
+              {{- if and $storeConfig.existingSecret $storeConfig.existingSecretEnabledFields.user }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{  $storeConfig.existingSecret }}
+                  key: "user"
+              {{- else }}
+              value: {{ $storeConfig.user }}
+              {{- end }}
+            {{- end }}
+{{/*            # TODO Check this */}}
+            {{- if (or $storeConfig.password $storeConfig.existingSecret) }}
+            - name: SQL_PASSWORD
+              {{- if $storeConfig.existingSecret }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $storeConfig.existingSecret }}
+                  key: "password"
+              {{- else }}
+              value: {{ $storeConfig.password }}
+              {{- end }}
+            {{- end }}
+          {{- if $temporalValues.tls.enabled }}
+          volumeMounts:
+            - mountPath: /mounted/ca-file
+              name: db-ssl-certificate
+          {{- end }}
+        {{- end }}
+          {{- with .Values.schema.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.schema.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      containers:
+        {{- range $store := (list "default" "visibility") }}
+        {{- $storeConfig := index $credentialStore $store }}
+        - name: update-{{ $store }}-schema
+          image: "{{ $temporalValues.admintools.image.repository }}:{{ $temporalValues.admintools.image.tag }}"
+          imagePullPolicy: {{ $temporalValues.admintools.image.pullPolicy }}
+          command: ['temporal-sql-tool', 'update', '--schema-dir', '/etc/temporal/schema/postgresql/v12/{{ eq $store "default" | ternary "temporal" $store }}/versioned']
+          env:
+            - name: SQL_PLUGIN
+              value: "postgres12"
+            - name: SQL_HOST
+              value: {{ $credentialStore.pgHost | quote }}
+            - name: SQL_PORT
+              value: {{ $credentialStore.pgPort | quote }}
+            - name: SQL_DATABASE
+              value: {{ $storeConfig.database | quote }}
+            - name: SQL_TLS
+              value: '{{ $temporalValues.tls.enabled }}'
+            {{- if $temporalValues.tls.enabled }}
+            - name: SQL_TLS_CA_FILE
+              value: /mounted/ca-file/certificate
+            {{- end }}
+            {{- if (or $storeConfig.user $storeConfig.existingSecret) }}
+            - name: SQL_USER
+              {{- if and $storeConfig.existingSecret $storeConfig.existingSecretEnabledFields.user }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{  $storeConfig.existingSecret }}
+                  key: "user"
+              {{- else }}
+              value: {{ $storeConfig.user }}
+              {{- end }}
+            {{- end }}
+{{/*            # TODO Check this */}}
+            {{- if (or $storeConfig.password $storeConfig.existingSecret) }}
+            - name: SQL_PASSWORD
+              {{- if $storeConfig.existingSecret }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $storeConfig.existingSecret }}
+                  key: "password"
+              {{- else }}
+              value: {{ $storeConfig.password }}
+              {{- end }}
+            {{- end }}
+          {{- if $temporalValues.tls.enabled }}
+          volumeMounts:
+            - mountPath: /mounted/ca-file
+              name: db-ssl-certificate
+          {{- end }}
+        {{- end }}
+          {{- with .Values.schema.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.schema.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- if $temporalValues.tls.enabled }}
+      volumes:
+        - name: db-ssl-certificate
+          secret:
+            secretName: {{include "catalog.ssl.certificate.secretName" . }}
+      {{- end }}
+      {{- with .Values.schema.securityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.deploy.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with (default $temporalValues.admintools.nodeSelector) }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $temporalValues.admintools.affinity }}
+      affinity:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $temporalValues.admintools.tolerations }}
+      tolerations:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+{{- end }}
+{{- if and .Values.schema.update.enabled .Values.temporal.deploy.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: temporal-schema-update
+  labels:
+    app.kubernetes.io/name: temporal-schema-update
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" }}
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+  annotations:
+    {{- if .Values.schema.update.hook.enabled }}
+    {{- if .Values.schema.update.hook.type }}
+    "helm.sh/hook": {{ .Values.schema.update.hook.type }}
+    {{- else if $temporalValues.cassandra.enabled }}
+    "helm.sh/hook": post-install,pre-upgrade
+    {{- else }}
+    "helm.sh/hook": pre-install,pre-upgrade
+    {{- end }}
+    "helm.sh/hook-weight": "1"
+    {{- if not $temporalValues.debug }}
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+    {{- end }}
+    {{- end }}
+spec:
+  backoffLimit: {{ .Values.schema.update.backoffLimit }}
+  template:
+    metadata:
+      name: temporal-schema-update
+      labels:
+        app.kubernetes.io/name: temporal-schema-update
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" }}
+        app.kubernetes.io/component: database
+        app.kubernetes.io/part-of: {{ .Chart.Name }}
+    spec:
+      restartPolicy: "OnFailure"
+      {{- with .Values.common.pods.affinity }}
+      affinity:
+      {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.common.pods.nodeSelector }}
+      nodeSelector:
+      {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.common.pods.tolerations }}
+      tolerations:
+      {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.common.pods.imagePullSecrets }}
+      imagePullSecrets:
+        {{- . | toYaml | nindent 10 }}
+      {{- end }}
+      containers:
+        {{- range $store := (list "default" "visibility") }}
+        {{- $storeConfig := index $credentialStore $store }}
+        - name: update-{{ $store }}-schema
+          image: "{{ $temporalValues.admintools.image.repository }}:{{ $temporalValues.admintools.image.tag }}"
+          imagePullPolicy: {{ $temporalValues.admintools.image.pullPolicy }}
+          command: ['temporal-sql-tool', 'update', '--schema-dir', '/etc/temporal/schema/postgresql/v12/{{ eq $store "default" | ternary "temporal" $store }}/versioned']
+          env:
+            - name: SQL_PLUGIN
+              value: "postgres12"
+            - name: SQL_HOST
+              value: {{ $credentialStore.pgHost | quote }}
+            - name: SQL_PORT
+              value: {{ $credentialStore.pgPort | quote }}
+            - name: SQL_DATABASE
+              value: {{ $storeConfig.database | quote }}
+            - name: SQL_TLS
+              value: '{{ $temporalValues.tls.enabled }}'
+            {{- if $temporalValues.tls.enabled }}
+            - name: SQL_TLS_CA_FILE
+              value: /mounted/ca-file/certificate
+            {{- end }}
+            {{- if (or $storeConfig.user $storeConfig.existingSecret) }}
+            - name: SQL_USER
+              {{- if and $storeConfig.existingSecret $storeConfig.existingSecretEnabledFields.user }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{  $storeConfig.existingSecret }}
+                  key: "user"
+              {{- else }}
+              value: {{ $storeConfig.user }}
+              {{- end }}
+            {{- end }}
+{{/*            # TODO Check this */}}
+            {{- if (or $storeConfig.password $storeConfig.existingSecret) }}
+            - name: SQL_PASSWORD
+              {{- if $storeConfig.existingSecret }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $storeConfig.existingSecret }}
+                  key: "password"
+              {{- else }}
+              value: {{ $storeConfig.password }}
+              {{- end }}
+            {{- end }}
+          {{- if $temporalValues.tls.enabled }}
+          volumeMounts:
+            - mountPath: /mounted/ca-file
+              name: db-ssl-certificate
+          {{- end }}
+        {{- end }}
+          {{- with .Values.schema.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.schema.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- if $temporalValues.tls.enabled }}
+      volumes:
+        - name: db-ssl-certificate
+          secret:
+            secretName: {{ include "catalog.ssl.certificate.secretName" . }}
+      {{- end }}
+      {{- with .Values.schema.securityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with (default $temporalValues.admintools.nodeSelector) }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $temporalValues.admintools.affinity }}
+      affinity:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $temporalValues.admintools.tolerations }}
+      tolerations:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+{{- end }}

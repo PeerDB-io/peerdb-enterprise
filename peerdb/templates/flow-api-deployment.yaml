@@ -1,0 +1,81 @@
+{{ if .Values.flowApi.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flow-api
+  labels:
+    {{- include "component.labels" "flow-api" | nindent 4 }}
+    {{- include "peerdb.common.labels" . | nindent 4 }}
+    {{- with .Values.flowApi.deployment.labels }}
+    {{ . | toYaml | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with .Values.flowApi.deployment.annotations }}
+    {{ . | toYaml | nindent 4 }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.flowApi.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "component.labels" "flow-api" | nindent 6 }}
+      {{- include "peerdb.common.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "component.labels" "flow-api" | nindent 8 }}
+        {{- include "peerdb.common.labels" . | nindent 8 }}
+        {{- with .Values.flowApi.pods.labels }}
+        {{ . | toYaml | nindent 8 }}
+        {{- end }}
+      annotations:
+        {{- with .Values.flowApi.pods.annotations }}
+        {{ . | toYaml | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- if .Values.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ default 60 .Values.flowWorker.terminationGracePeriodSeconds }}
+      {{- include "pods.affinity" (list $ "flowApi") | nindent 6 }}
+      {{- include "pods.nodeSelector" (list $ "flowApi") | nindent 6 }}
+      {{- include "pods.tolerations" (list $ "flowApi") | nindent 6 }}
+      {{- include "pods.imagePullSecrets" (list $ "flowApi") | nindent 6 }}
+
+      containers:
+      - name: flow-api
+        image: "{{ .Values.flowApi.image.repository }}:{{ .Values.flowApi.version | default .Values.peerdb.version }}"
+        imagePullPolicy: {{ .Values.flowApi.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.flowApi.service.targetPort }}
+          name: api
+        - containerPort: {{ .Values.flowApi.service.targetHttpPort }}
+          name: http
+        env:
+        {{- include "catalog.pgConf" . | nindent 8 }}
+        {{- include "aws.config" . | nindent 8 }}
+        {{- include "temporal.config" . | nindent 8 }}
+        {{- with .Values.flowApi.extraEnv -}}
+        {{ . | toYaml | nindent 8}}
+        {{- end }}
+        - name: GIN_MODE
+          value: release
+        livenessProbe:
+          grpc:
+            port: {{ .Values.flowApi.service.targetPort }}
+          initialDelaySeconds: 10
+          periodSeconds: 3
+          timeoutSeconds: 60
+          failureThreshold: 3
+          terminationGracePeriodSeconds: 30
+        readinessProbe:
+          grpc:
+            port: {{ .Values.flowApi.service.targetPort }}
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 180
+          failureThreshold: 3
+
+        {{- with .Values.flowApi.resources }}
+        resources: {{ toYaml . | nindent 10 }}
+        {{- end }}
+{{- end -}}

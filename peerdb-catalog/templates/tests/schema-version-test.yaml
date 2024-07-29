@@ -1,0 +1,67 @@
+{{- if .Values.temporal.deploy.enabled }}
+{{- $ := . }}
+{{- $credentialStore := .Values.credentials }}
+{{- $requiredDBVersions := dict "default" "1.12" "visibility" "1.6" }}
+{{- range $store := (list "default" "visibility") }}
+{{- $storeConfig := index $credentialStore $store }}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: helm-test-fetch-{{ $store }}-version
+  annotations:
+    "helm.sh/hook": test
+{{/*    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed*/}}
+spec:
+
+  {{- with $.Values.common.pods.affinity }}
+  affinity:
+  {{- . | toYaml | nindent 4 }}
+  {{- end }}
+  {{- with $.Values.common.pods.nodeSelector }}
+  nodeSelector:
+  {{- . | toYaml | nindent 4 }}
+  {{- end }}
+  {{- with $.Values.common.pods.tolerations }}
+  tolerations:
+  {{- . | toYaml | nindent 4 }}
+  {{- end }}
+  {{- with $.Values.common.pods.imagePullSecrets }}
+  imagePullSecrets:
+  {{- . | toYaml | nindent 6 }}
+  {{- end }}
+  containers:
+  - name: fetch-{{ $store }}-version
+    image: "{{ $.Values.schema.test.image.repository }}:{{ $.Values.schema.test.image.tag }}"
+    imagePullPolicy: Always
+
+    command:
+      - bash
+      - -c
+      - |
+        psql -t "host=$(PG_HOST) port=$(PG_PORT) dbname=$(PG_DB) password=$(PG_PASS) user=$(PG_USER)" -c "SELECT * FROM schema_version WHERE curr_version='$(DB_REQUIRED_VERSION)' AND db_name='$(PG_DB)'" | egrep . || (echo "Version=$(DB_REQUIRED_VERSION) not found for $(PG_DB)" && exit 1)
+    env:
+      - name: PG_HOST
+        value: {{ $credentialStore.pgHost}}
+      - name: PG_PORT
+        value: {{ $credentialStore.pgPort | quote }}
+      - name: PG_USER
+        value: {{ $storeConfig.user }}
+      - name: PG_DB
+        value: {{ $storeConfig.database }}
+      {{- if (or $storeConfig.password $storeConfig.existingSecret) }}
+      - name: PG_PASS
+        {{- if $storeConfig.existingSecret }}
+        valueFrom:
+          secretKeyRef:
+            name: {{ $storeConfig.existingSecret }}
+            key: "password"
+        {{- else }}
+        value: {{ $storeConfig.password }}
+        {{- end }}
+      {{- end }}
+      - name: DB_REQUIRED_VERSION
+        value: {{ index $requiredDBVersions $store | quote }}
+  restartPolicy: Never
+{{- end }}
+{{- end }}

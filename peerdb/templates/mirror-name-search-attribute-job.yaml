@@ -1,0 +1,66 @@
+{{- $temporalValues := index .Values "temporal-deploy" }}
+{{- if and .Values.temporal.deploy.enabled .Release.IsInstall }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mirror-name-search-attribute
+  labels:
+    {{- include "component.labels" "mirror-name-search-attribute" | nindent 4 }}
+    {{- include "peerdb.common.labels" . | nindent 4 }}
+spec:
+  backoffLimit: {{ .Values.temporal.deploy.mirrorNameSearchAttribute.backoffLimit }}
+  template:
+    metadata:
+      name: mirror-name-search-attribute
+      labels:
+        {{- include "component.labels" "mirror-name-search-attribute" | nindent 8 }}
+        {{- include "peerdb.common.labels" . | nindent 8 }}
+    spec:
+      restartPolicy: "OnFailure"
+      {{- with .Values.common.pods.affinity }}
+      affinity:
+      {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.common.pods.nodeSelector }}
+      nodeSelector:
+      {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.common.pods.tolerations }}
+      tolerations:
+      {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.common.pods.imagePullSecrets }}
+      imagePullSecrets:
+        {{- . | toYaml | nindent 10 }}
+      {{- end }}
+      containers:
+        - name: mirror-name-search-attribute
+          image: "{{ $temporalValues.admintools.image.repository }}:{{ $temporalValues.admintools.image.tag }}"
+          imagePullPolicy: {{ $temporalValues.admintools.image.pullPolicy }}
+          # Refer to https://github.com/PeerDB-io/peerdb/blob/main/scripts/mirror-name-search.sh
+          command:
+            - 'sh'
+            - '-c'
+            - |
+              while ! tctl cluster health | grep -q ": SERVING$"; do tctl cluster health; sleep 3; done && (temporal operator search-attribute list | grep -w MirrorName >/dev/null 2>&1) || temporal operator search-attribute create --name MirrorName --type Text --namespace {{ .Values.temporal.namespace }}
+          env:
+            - name: TEMPORAL_NAMESPACE
+              value: {{ .Values.temporal.namespace | quote }}
+            - name: TEMPORAL_CLI_ADDRESS
+              value: "{{ .Release.Name }}-temporal-deploy-frontend:{{ $temporalValues.server.frontend.service.port }}"
+            - name: TEMPORAL_ADDRESS
+              value: "{{ .Release.Name }}-temporal-deploy-frontend:{{ $temporalValues.server.frontend.service.port }}"
+        {{- with .Values.temporal.deploy.mirrorNameSearchAttribute.resources }}
+          resources:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- with .Values.temporal.deploy.mirrorNameSearchAttribute.containerSecurityContext }}
+          securityContext:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+      {{- with .Values.temporal.deploy.mirrorNameSearchAttribute.securityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+{{- end }}

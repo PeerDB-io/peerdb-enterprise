@@ -1,0 +1,20 @@
+{{- if .Values.peerdbUI.service.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: peerdb-ui
+  labels:
+    {{- include "component.labels" "peerdb-ui" | nindent 4 }}
+    {{- include "peerdb.common.labels" . | nindent 4 }}
+  annotations:
+    {{- .Values.peerdbUI.service.annotations | toYaml | nindent 4 }}
+spec:
+  selector:
+    {{- include "component.labels" "peerdb-ui" | nindent 4 }}
+    {{- include "peerdb.common.selectorLabels" . | nindent 4 }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.peerdbUI.service.port }}
+      targetPort: {{ .Values.peerdbUI.service.targetPort }}
+  type: {{ if .Values.authentication.enabled }}ClusterIP{{ else }}{{ .Values.peerdbUI.service.type }}{{ end }}
+{{- end -}}

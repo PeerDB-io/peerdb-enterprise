@@ -1,0 +1,24 @@
+{{- if .Values.authentication.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "authentication.service.name" . }}
+  annotations:
+    {{- .Values.authentication.service.annotations | toYaml | nindent 4 }}
+spec:
+  selector:
+    {{- include "authentication.labels" . | nindent 4 }}
+  {{- if not (eq .Values.authentication.service.type "LoadBalancer") }}
+  sessionAffinity: ClientIP
+  {{- end }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.authentication.service.port }}
+      targetPort: {{ .Values.authentication.service.targetPort }}
+      name: http
+    - protocol: TCP
+      port: {{ .Values.peerdb.service.port }}
+      targetPort: {{ .Values.peerdb.service.targetPort }}
+      name: peerdb
+  type: {{ .Values.authentication.service.type }}
+{{- end -}}

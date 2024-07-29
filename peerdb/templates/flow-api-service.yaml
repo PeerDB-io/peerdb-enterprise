@@ -1,0 +1,26 @@
+{{- if .Values.flowApi.service.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: flow-api
+  annotations:
+    {{- .Values.flowApi.service.annotations | toYaml | nindent 4 }}
+  labels:
+    {{- include "component.labels" "flow-api" | nindent 4 }}
+    {{- include "peerdb.common.labels" . | nindent 4 }}
+spec:
+  selector:
+    {{- include "component.labels" "flow-api" | nindent 4 }}
+    {{- include "peerdb.common.selectorLabels" . | nindent 4 }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.flowApi.service.port }}
+      targetPort: {{ .Values.flowApi.service.targetPort }}
+      name: grpc-api
+    - protocol: TCP
+      port: {{ .Values.flowApi.service.httpPort }}
+      targetPort: {{ .Values.flowApi.service.targetHttpPort }}
+      name: http-api
+
+  type: {{ .Values.flowApi.service.type }}
+{{- end -}}

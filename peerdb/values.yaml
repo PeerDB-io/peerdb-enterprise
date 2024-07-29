@@ -1,0 +1,627 @@
+catalog:
+  # -- catalog host - autofilled if using in-cluster catalog, else pulled from .env
+  pgHost: _PG_HOST_
+  # -- catalog port - autofilled if using in-cluster catalog, else pulled from .env
+  pgPort: _PG_PORT_
+  # -- catalog user - autofilled if using in-cluster catalog, else pulled from .env
+  pgUser: _PG_USER_
+  # -- catalog password - autofilled if using in-cluster catalog, else pulled from .env
+  pgPassword: _PG_PASSWORD_
+  # -- catalog database - autofilled if using in-cluster catalog, else pulled from .env
+  pgDatabase: _PG_DATABASE_
+  # -- catalog admin database - autofilled if using in-cluster catalog, else pulled from .env
+  pgAdminDatabase: _PG_ADMIN_DATABASE_
+  deploy:
+    # -- Whether to deploy the catalog, pulled from `CATALOG_DEPLOY_ENABLED` from .env
+    enabled: false
+    clusterName: catalog-pg-cluster
+  # -- catalog credentials secret name - autofilled if using in-cluster catalog, else pulled `CATALOG_DB_MANUAL_CREDS_NAME` from .env and is used to create the secret for the catalog, creds are pulled from .env
+  credentialsSecretName: _CATALOG_DB_MANUAL_CREDS_NAME_
+  # -- Use an existing secret for catalog credentials. Use this when saving credentials to values.yaml is not desired
+  existingSecret: ""
+aws:
+  accessKeyId:
+  secretAccessKey:
+  region: _AWS_REGION_
+  roleArn:
+
+azure:
+  clientId:
+  clientSecret:
+  subscriptionId:
+  tenantId:
+
+serviceAccount:
+  create: true
+  name:
+
+temporal:
+  deploy:
+    # -- Whether to deploy temporal, pulled from `TEMPORAL_DEPLOY_ENABLED` from .env
+    enabled: true
+    # TODO for multiple enterprise deployments: namespace, mirrorSearchAttribute needs to be created manually for now
+    registerNamespace:
+      backoffLimit: 100
+      resources:
+        requests:
+          cpu: 0.1
+          memory: 128Mi
+          ephemeral-storage: 4Gi
+        limits:
+          cpu: 0.5
+          memory: 256Mi
+          ephemeral-storage: 4Gi
+    mirrorNameSearchAttribute:
+      backoffLimit: 100
+      resources:
+        requests:
+          cpu: 0.1
+          memory: 128Mi
+        limits:
+          cpu: 0.5
+          memory: 256Mi
+  host: peerdb-temporal-frontend
+  port: 7233
+  k8s_namespace: _PEERDB_TEMPORAL_K8S_NAMESPACE_
+  namespace: default
+  releaseName: _PEERDB_TEMPORAL_RELEASE_NAME_
+  clientCert: _PEERDB_TEMPORAL_CLIENT_CERT_
+  clientKey: _PEERDB_TEMPORAL_CLIENT_KEY_
+  taskQueueId: _PEERDB_DEPLOYMENT_UID_
+
+pyroscope:
+  enabled: false
+
+flowWorker:
+  enabled: true
+  extraEnv: []
+  lowCost: false
+  pods:
+    nodeSelector: { }
+    tolerations: [ ]
+    # -- flowWorker pod affinity, the default is to schedule flowWorker pods on different nodes than other flowWorker pods for High Availability
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - flow-worker
+              topologyKey: topology.kubernetes.io/zone
+    # -- annotations that will be applied to all flowWorker pods, NOT the deployment
+    annotations: { }
+    # -- labels that will be applied to all flowWorker pods, NOT the deployment
+    labels: { }
+  deployment:
+    # -- labels that will be applied to the flowWorker deployment, NOT the pods
+    labels: { }
+    # -- annotations that will be applied to the flowWorker deployment, NOT the pods
+    annotations: { }
+  replicaCount: 2
+  image:
+    repository: ghcr.io/peerdb-io/flow-worker
+    pullPolicy: Always
+  resources:
+    requests:
+      cpu: 2
+      memory: 8Gi
+      ephemeral-storage: 64Gi
+    limits:
+      cpu: 4
+      memory: 8Gi
+      ephemeral-storage: 128Gi
+
+flowSnapshotWorker:
+  enabled: true
+  extraEnv: []
+  lowCost: true
+  pods:
+    nodeSelector: { }
+    tolerations: [ ]
+    affinity: { }
+    # -- annotations that will be applied to all flowSnapshotWorker pods, NOT the statefulSet
+    annotations: { }
+    # -- labels that will be applied to all flowSnapshotWorker pods, NOT the statefulSet
+    labels: { }
+  statefulSet:
+    # -- labels that will be applied to the flowSnapshotWorker statefulSet, NOT the pods
+    labels: { }
+    # -- annotations that will be applied to the flowSnapshotWorker statefulSet, NOT the pods
+    annotations: { }
+  replicaCount: 1
+  image:
+    repository: ghcr.io/peerdb-io/flow-snapshot-worker
+    pullPolicy: Always
+  resources:
+    requests:
+      cpu: 0.5
+      memory: 1Gi
+      ephemeral-storage: 10Gi
+    limits:
+      cpu: 1
+      memory: 1Gi
+      ephemeral-storage: 16Gi
+  service:
+    enabled: true
+    annotations: { }
+
+flowApi:
+  enabled: true
+  extraEnv: []
+  lowCost: true
+  pods:
+    nodeSelector: { }
+    tolerations: [ ]
+    # -- flowApi pod affinity, the default is to schedule flowApi pods on different nodes than other flowApi pods for High Availability
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - flow-api
+              topologyKey: topology.kubernetes.io/zone
+    # -- annotations that will be applied to all flowApi pods, NOT the deployment
+    annotations: { }
+    # -- labels that will be applied to all flowApi pods, NOT the deployment
+    labels: { }
+  deployment:
+    # -- labels that will be applied to the flowApi deployment, NOT the pods
+    labels: { }
+    # -- annotations that will be applied to the flowApi deployment, NOT the pods
+    annotations: { }
+  replicaCount: 4
+  image:
+    repository: ghcr.io/peerdb-io/flow-api
+    pullPolicy: Always
+  service:
+    enabled: true
+    type: ClusterIP
+    port: 8112
+    targetPort: 8112
+    httpPort: 8113
+    targetHttpPort: 8113
+    annotations: { }
+  resources:
+    requests:
+      cpu: 0.1
+      memory: 128Mi
+      ephemeral-storage: 4Gi
+    limits:
+      cpu: 0.5
+      memory: 256Mi
+      ephemeral-storage: 4Gi
+
+peerdbUI:
+  enabled: true
+  credentials:
+    password: _PEERDB_PASSWORD_
+    nexauth_secret: ''
+  extraEnv: []
+  lowCost: true
+  pods:
+    nodeSelector: { }
+    tolerations: [ ]
+    # -- peerdbUI pod affinity, the default is to schedule peerdbUI pods on different nodes than other peerdbUI pods for High Availability
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - peerdb-ui
+              topologyKey: topology.kubernetes.io/zone
+    # -- annotations that will be applied to all peerdbUI pods, NOT the deployment
+    annotations: { }
+    # -- labels that will be applied to all peerdbUI pods, NOT the deployment
+    labels: { }
+  deployment:
+    # -- labels that will be applied to the peerdbUI deployment, NOT the pods
+    labels: { }
+    # -- annotations that will be applied to the peerdbUI deployment, NOT the pods
+    annotations: { }
+  replicaCount: 4
+  image:
+    repository: ghcr.io/peerdb-io/peerdb-ui
+    pullPolicy: Always
+  service:
+    enabled: true
+    type: LoadBalancer
+    port: 3000
+    targetPort: 3000
+    url: _PEERDB_UI_SERVICE_URL_
+    annotations: { }
+
+  resources:
+    requests:
+      cpu: 0.1
+      memory: 256Mi
+      ephemeral-storage: 4Gi
+    limits:
+      cpu: 0.5
+      memory: 512Mi
+      ephemeral-storage: 4Gi
+  ingress:
+    enabled: false
+    annotations: { }
+    className: ""
+    # -- TLS configuration for ingress. Eg: `[ { hosts: [ "example.com" ], secretName: "example-tls" } ]`
+    tls: [ ]
+    # -- List of Hosts for the Ingress
+    hosts:
+      # -- Host of the ingress, non-empty
+      - host: ""
+        # -- Paths within the host
+        paths:
+          # -- Path within the host, non-empty
+          - path: /
+
+
+peerdb:
+  enabled: true
+  extraEnv: []
+  lowCost: true
+  pods:
+    nodeSelector: { }
+    tolerations: [ ]
+    # -- peerdb pod affinity, the default is to schedule peerdb pods on different nodes than other peerdb pods for High Availability
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - peerdb-server
+              topologyKey: topology.kubernetes.io/zone
+    # -- annotations that will be applied to the peerdb-server pods, NOT the deployment
+    annotations: { }
+    # -- labels that will be applied to the peerdb-server pods, NOT the deployment
+    labels: { }
+  deployment:
+    # -- labels that will be applied to the peerdb-server deployment, NOT the pods
+    labels: { }
+    # -- annotations that will be applied to the peerdb-server deployment, NOT the pods
+    annotations: { }
+  replicaCount: 4
+  version: stable-v0.12.1
+  image:
+    repository: ghcr.io/peerdb-io/peerdb-server
+    pullPolicy: Always
+  service:
+    enabled: true
+    name: peerdb-server
+    port: 9900
+    targetPort: 9900
+    type: ClusterIP
+    annotations: { }
+  env:
+    logDir: "/var/log/peerdb"
+  credentials:
+    password: "peerdb"
+  resources:
+    requests:
+      cpu: 0.1
+      memory: 128Mi
+      ephemeral-storage: 4Gi
+    limits:
+      cpu: 0.5
+      memory: 256Mi
+      ephemeral-storage: 4Gi
+
+authentication:
+  enabled: false
+  replicaCount: 4
+  credentials:
+    username: peerdb-user
+    password:
+  service:
+    port: 80
+    targetPort: 80
+    type: LoadBalancer
+    annotations: { }
+  image:
+    repository: nginx
+    tag: latest
+    pullPolicy: Always
+  resources:
+    requests:
+      cpu: 0.1
+      memory: 128Mi
+      ephemeral-storage: 4Gi
+    limits:
+      cpu: 0.5
+      memory: 256Mi
+      ephemeral-storage: 4Gi
+  healthcheck:
+    path: "/health"
+    script:
+      timeoutSeconds: 55
+  backendService:
+    peerdbUi:
+      hostPattern: ""
+    temporal:
+      hostPattern: ""
+
+temporal-deploy:
+  server:
+    dynamicConfig:
+      limit.maxIDLength:
+        - value: 255
+          constraints: {}
+      frontend.enableUpdateWorkflowExecution:
+        - value: true # to enable external updates of workflow status [PAUSING, TERMINATING]
+    replicaCount: 1
+    config:
+      persistence:
+        default:
+          driver: "sql"
+
+          sql:
+            driver: "postgres12"
+            host: _HOST_
+            port: 5432
+            database: temporal
+            user: _USERNAME_
+            password: _PASSWORD_
+            # for a production deployment use this instead of `password` and provision the secret beforehand e.g. with a sealed secret
+            # it has a single key called `password`
+            # existingSecret: temporal-default-store
+            maxConns: 20
+            maxConnLifetime: "1h"
+            tls:
+              enabled: _TEMPORAL_SSL_MODE_
+            #  enableHostVerification: true
+            #  serverName: _HOST_ # this is strictly required when using serverless CRDB offerings
+
+        visibility:
+          driver: "sql"
+
+          sql:
+            driver: "postgres12"
+            host: _HOST_
+            port: 5432
+            database: temporal_visibility
+            user: _USERNAME_
+            password: _PASSWORD_
+            # for a production deployment use this instead of `password` and provision the secret beforehand e.g. with a sealed secret
+            # it has a single key called `password`
+            # existingSecret: temporal-visibility-store
+            maxConns: 20
+            maxConnLifetime: "1h"
+            tls:
+              enabled: _TEMPORAL_SSL_MODE_
+            #  enableHostVerification: true
+            #  serverName: _HOST_ # this is strictly required when using serverless CRDB offerings
+    resources:
+      requests:
+        cpu: 2
+        memory: 2Gi
+      limits:
+        cpu: 4
+        memory: 4Gi
+    frontend:
+      replicaCount: 1
+      resources:
+        requests:
+          cpu: 1
+          memory: 1Gi
+        limits:
+          cpu: 1.5
+          memory: 1.5Gi
+      # -- `frontend` pod affinity, the default is to schedule frontend pods on different nodes than other frontend pods for High Availability
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - temporal-deploy
+                    - key: app.kubernetes.io/component
+                      operator: In
+                      values:
+                        - web
+                topologyKey: topology.kubernetes.io/zone
+    history:
+      replicaCount: 1
+      resources:
+        requests:
+          cpu: 1
+          memory: 1.5Gi
+        limits:
+          cpu: 2
+          memory: 2Gi
+      # -- `history` pod affinity, the default is to schedule history pods on different nodes than other history pods for High Availability
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - temporal-deploy
+                    - key: app.kubernetes.io/component
+                      operator: In
+                      values:
+                        - history
+                topologyKey: topology.kubernetes.io/zone
+    matching:
+      replicaCount: 1
+      resources:
+        requests:
+          cpu: 1
+          memory: 1Gi
+        limits:
+          cpu: 1.5
+          memory: 1.5Gi
+      # -- `matching` pod affinity, the default is to schedule matching pods on different nodes than other matching pods for High Availability
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - temporal-deploy
+                    - key: app.kubernetes.io/component
+                      operator: In
+                      values:
+                        - matching
+                topologyKey: topology.kubernetes.io/zone
+    worker:
+      replicaCount: 1
+      resources:
+        requests:
+          cpu: 1
+          memory: 1Gi
+        limits:
+          cpu: 1.5
+          memory: 1.5Gi
+      # -- `worker` pod affinity, the default is to schedule worker pods on different nodes than other worker pods for High Availability
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - temporal-deploy
+                    - key: app.kubernetes.io/component
+                      operator: In
+                      values:
+                        - worker
+                topologyKey: topology.kubernetes.io/zone
+
+  web:
+    replicaCount: 1
+    image:
+      tag: 2.22.2 # refer to https://github.com/PeerDB-io/peerdb/blob/a4c028c993070edcc132aa8e621d321d9264bb7a/docker-compose.yml#L93
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: 1
+        memory: 1Gi
+    # -- `web` pod affinity, the default is to schedule web pods on different nodes than other web pods for High Availability
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - temporal-deploy
+                  - key: app.kubernetes.io/component
+                    operator: In
+                    values:
+                      - web
+              topologyKey: topology.kubernetes.io/zone
+
+  admintools:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+
+  cassandra:
+    enabled: false
+
+  mysql:
+    enabled: false
+
+  elasticsearch:
+    enabled: false
+  grafana:
+    enabled: false
+  prometheus:
+    enabled: false
+
+  schema:
+    setup:
+      enabled: false
+    update:
+      enabled: false
+
+datadog:
+  # -- Whether to deploy datadog, pulled from `DATADOG_ENABLED` from .env
+  enabled: _DATADOG_ENABLED_
+  datadog:
+    containerExclude: "kube_namespace:.*"
+    containerInclude: "kube_namespace:_PEERDB_K8S_NAMESPACE_"
+    networkMonitoring:
+      enabled: true
+    # -- datadog site, pulled from `DATADOG_SITE` from .env
+    site: _DATADOG_SITE_
+    # -- datadog api key, pulled from `DATADOG_API_KEY` from .env
+    apiKey: _DATADOG_API_KEY_
+    # -- datadog cluster name, pulled from `DATADOG_CLUSTER_NAME` from .env
+    clusterName: _DATADOG_CLUSTER_NAME_
+    logs:
+      enabled: true
+      containerCollectAll: true
+    tags:
+      - "peerdb.io/cluster-for:enterprise"
+  clusterAgent:
+    replicas: 2
+    createPodDisruptionBudget: true
+    enabled: true
+
+# -- Common values for all peerdb components that will be merged with the specific component values
+common:
+  pods:
+    # -- Node selector that will be applied to all the peerdb components additively
+    nodeSelector: { }
+    # -- Tolerations that will be applied to all the peerdb components additively
+    tolerations: [ ]
+    # -- Affinity that will be applied to all the peerdb components additively
+    affinity: { }
+    # -- Image pull secrets that will be applied to all the peerdb components additively
+    imagePullSecrets: []
+
+global:
+  peerdb:
+    enterprise:
+      # -- Whether to save customer values as a kubernetes secret for backup, pulled from `SAVE_VALUES_AS_SECRET` from .env
+      saveCustomerValuesAsSecret: _SAVE_VALUES_AS_SECRET_
+    lowCost:
+      # -- Node selector that will be applied to all the lowCost=true peerdb components additively
+      nodeSelector: { }
+      # -- Tolerations that will be applied to all the lowCost=true peerdb components additively
+      tolerations: [ ]
+      # -- Affinity that will be applied to all the lowCost=true peerdb components additively
+      affinity: { }

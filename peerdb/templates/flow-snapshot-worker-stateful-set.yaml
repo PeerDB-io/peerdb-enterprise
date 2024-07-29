@@ -1,0 +1,58 @@
+{{- if .Values.flowSnapshotWorker.enabled -}}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: flow-snapshot-worker
+  labels:
+    {{- include "component.labels" "flow-snapshot-worker" | nindent 4 }}
+    {{- include "peerdb.common.labels" . | nindent 4 }}
+    {{- with .Values.flowSnapshotWorker.statefulSet.labels }}
+    {{ . | toYaml | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with .Values.flowSnapshotWorker.statefulSet.annotations }}
+    {{ . | toYaml | nindent 4 }}
+    {{- end }}
+spec:
+  serviceName: "flow-snapshot-service"
+  replicas: {{ .Values.flowSnapshotWorker.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "component.labels" "flow-snapshot-worker" | nindent 6 }}
+      {{- include "peerdb.common.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "component.labels" "flow-snapshot-worker" | nindent 8 }}
+        {{- include "peerdb.common.labels" . | nindent 8 }}
+        {{- with .Values.flowSnapshotWorker.pods.labels }}
+        {{ . | toYaml | nindent 8 }}
+        {{- end }}
+      annotations:
+        {{- with .Values.flowSnapshotWorker.pods.annotations }}
+        {{ . | toYaml | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- if .Values.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ default 600 .Values.flowSnapshotWorker.terminationGracePeriodSeconds }}
+      {{- include "pods.affinity" (list $ "flowSnapshotWorker") | nindent 6 }}
+      {{- include "pods.nodeSelector" (list $ "flowSnapshotWorker") | nindent 6 }}
+      {{- include "pods.tolerations" (list $ "flowSnapshotWorker") | nindent 6 }}
+      {{- include "pods.imagePullSecrets" (list $ "flowSnapshotWorker") | nindent 6 }}
+
+      containers:
+      - name: flow-snapshot-worker
+        image: "{{ .Values.flowSnapshotWorker.image.repository }}:{{ .Values.flowSnapshotWorker.version | default .Values.peerdb.version }}"
+        imagePullPolicy: {{ .Values.flowSnapshotWorker.image.pullPolicy }}
+        env:
+        {{- include "catalog.pgConf" . | nindent 8 }}
+        {{- include "temporal.config" . | nindent 8 }}
+        {{- with .Values.flowSnapshotWorker.extraEnv -}}
+        {{ . | toYaml | nindent 8}}
+        {{- end }}
+        {{- with .Values.flowSnapshotWorker.resources }}
+        resources: {{ toYaml . | nindent 10 }}
+        {{- end }}
+{{- end -}}

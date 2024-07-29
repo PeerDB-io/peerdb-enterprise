@@ -1,0 +1,109 @@
+{{- if .Values.deploy.enabled }}
+{{- $temporalDefaultUser := .Values.credentials.default.user }}
+{{- $temporalVisibilitytUser := .Values.credentials.visibility.user }}
+{{- $temporalDefaultDb := .Values.credentials.default.database }}
+{{- $temporalVisibilityDb := .Values.credentials.visibility.database }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "deploy.postgres.name" . }}-init-sql
+data:
+  init.sql: |
+    {{- $dbUsersDict := dict .Values.credentials.catalog.database .Values.credentials.admin.user $temporalDefaultDb $temporalDefaultUser $temporalVisibilityDb $temporalVisibilitytUser }}
+    {{- if not .Values.temporal.deploy.enabled }}
+    {{- $dbUsersDict := dict .Values.credentials.catalog.database .Values.credentials.admin.user }}
+    {{- end }}
+    {{- range $db, $user := dict .Values.credentials.catalog.database .Values.credentials.admin.user $temporalDefaultDb $temporalDefaultUser $temporalVisibilityDb $temporalVisibilitytUser }}
+    \c {{ $db }}
+    GRANT CREATE ON SCHEMA public TO "{{ $user }}";
+  {{- end }}
+
+---
+apiVersion: postgres-operator.crunchydata.com/v1beta1
+kind: PostgresCluster
+metadata:
+  name: {{ include "deploy.postgres.cluster.name" . }}
+spec:
+  postgresVersion: {{ .Values.deploy.version }}
+  patroni:
+    dynamicConfiguration:
+      postgresql:
+        parameters:
+          max_connections: 1000
+        {{- if .Values.pgo.patroni.allowed_cidr }}
+        pg_hba:
+        {{- range $single_cidr := .Values.pgo.patroni.allowed_cidr  }}
+        - host all all {{ $single_cidr }} scram-sha-256
+        {{- end }}
+        {{- end }}
+
+      log:
+        level: DEBUG
+  databaseInitSQL:
+    key: init.sql
+    name: {{ include "deploy.postgres.name" . }}-init-sql
+
+  instances:
+    - name: {{ include "deploy.postgres.cluster.name" . }}
+      replicas: {{ .Values.deploy.replicaCount }}
+      dataVolumeClaimSpec:
+        {{- if .Values.deploy.instance.volume.storageClassName }}
+        storageClassName: {{ .Values.deploy.instance.volume.storageClassName }}
+        {{- end }}
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: {{ .Values.deploy.instance.volume.resources.requests.storage }}
+      {{- with .Values.deploy.resources }}
+      resources: {{ toYaml . | nindent 9 }}
+      {{- end }}
+
+  users:
+    {{- $usernameRegex := `^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$` }}
+    {{- $errorMessage := (print " postgres user should match regex: '" $usernameRegex "' (should NOT contain underscores)" ) }}
+    {{- $_1 := mustRegexFind $usernameRegex .Values.credentials.admin.user | required (print "catalog" $errorMessage) }}
+    {{- $_2 := mustRegexFind $usernameRegex $temporalDefaultUser | required (print "temporal-default" $errorMessage) }}
+    {{- $_3 := mustRegexFind $usernameRegex $temporalVisibilitytUser | required (print "temporal-visibility" $errorMessage) }}
+    # cfg.temporalUser - cfg.temporaldb, cfg.temporalvsibilitydb
+    # cfg.User - PeerDBCatalogDB
+    - name: {{ .Values.credentials.admin.user }}
+      databases:
+      - {{ .Values.credentials.admin.database }}
+      {{- if ne .Values.credentials.admin.database .Values.credentials.catalog.database }}
+      - {{ .Values.credentials.catalog.database }}
+      {{- end }}
+      options: {{ .Values.deploy.user.options | quote }}
+      {{ if .Values.temporal.deploy.enabled }}
+      {{- if eq $temporalDefaultUser $temporalVisibilitytUser }}
+    - name: {{ $temporalDefaultUser | quote }}
+      databases:
+      - {{ $temporalDefaultDb | quote }}
+      - {{ $temporalVisibilityDb | quote }}
+      {{- else }}
+    - name: {{ $temporalDefaultUser | quote }}
+      databases:
+        - {{ $temporalDefaultDb | quote }}
+    - name: {{ $temporalVisibilitytUser | quote }}
+      databases:
+        - {{ $temporalVisibilityDb | quote }}
+      {{- end }}
+      {{- end }}
+  backups:
+    pgbackrest:
+      global:
+        repo1-retention-full: "14"
+        repo1-retention-full-type: time
+      repos:
+        - name: repo1
+          schedules:
+            full: "0 1 * * 0"
+            differential: "0 1 * * 1-6"
+          volume:
+            volumeClaimSpec:
+              accessModes:
+                - "ReadWriteOnce"
+              resources:
+                requests:
+                  storage: {{ .Values.deploy.backups.volume.resources.requests.storage }}
+{{- end }}

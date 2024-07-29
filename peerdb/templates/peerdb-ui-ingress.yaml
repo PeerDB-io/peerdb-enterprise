@@ -1,0 +1,57 @@
+{{- if .Values.peerdbUI.ingress.enabled -}}
+  {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
+apiVersion: networking.k8s.io/v1
+{{/*  {{- else if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}*/}}
+{{/*apiVersion: networking.k8s.io/v1beta1*/}}
+{{/*  {{- else if .Capabilities.APIVersions.Has "extensions/v1beta1" }}*/}}
+{{/*apiVersion: extensions/v1beta1*/}}
+  {{- else }} # We will error out with a message that kubernetes version is older than 1.19, we can support it, but it is too old to not have other problems
+  {{ fail printf ("Ingress API version is not supported by kubernetes version %s" .Capabilities.KubeVersion.GitVersion) }}
+  {{- end }}
+kind: Ingress
+metadata:
+  name: peerdb-ui
+  labels:
+    {{- include "component.labels" "peerdb-ui" | nindent 4 }}
+    {{- include "peerdb.common.labels" . | nindent 4 }}
+{{- with .Values.peerdbUI.ingress.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  {{- with .Values.peerdbUI.ingress.className }}
+  ingressClassName: {{ . | quote }}
+  {{- end }}
+  {{- if .Values.peerdbUI.ingress.tls }}
+  tls:
+    {{- range .Values.peerdbUI.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | required "Ingress TLS Host is required at .Values.peerdbUI.ingress.tls.hosts.host" | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- range .Values.peerdbUI.ingress.hosts }}
+    - host: {{ .host | required "Ingress host is required at .Values.peerdbUI.ingress.hosts.host" | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path | required "Ingress path is required at .Values.peerdbUI.ingress.hosts.paths.path" | quote }}
+            {{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
+            pathType: Prefix
+            backend:
+              service:
+                name: peerdb-ui
+                port:
+                  number: {{ $.Values.peerdbUI.service.port }}
+{{/*            {{- else if $.Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}*/}}
+{{/*            backend:*/}}
+{{/*              serviceName: peerdb-ui*/}}
+{{/*              servicePort: {{ $.Values.peerdbUI.service.port }}*/}}
+{{/*            {{- end }}*/}}
+          {{- end }}
+      {{- end}}
+    {{- end }}
+{{- end }}

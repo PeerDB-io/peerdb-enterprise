@@ -1,0 +1,33 @@
+apiVersion: v2
+name: peerdb
+description: Install PeerDB along with Temporal.
+maintainers:
+  - name: PeerDB Inc.
+    url: https://peerdb.io/
+  - name: Kunal Gupta
+    email: kunal@peerdb.io
+dependencies:
+  - name: pyroscope
+    repository: https://grafana.github.io/helm-charts
+    version: 1.0.3
+    condition: pyroscope.enabled
+  - name: temporal
+    repository: https://go.temporal.io/helm-charts
+    version: 0.44.0
+    alias: temporal-deploy
+    condition: temporal.deploy.enabled
+  - name: datadog
+    version: 3.52.0
+    repository: https://helm.datadoghq.com
+    alias: datadog
+    condition: datadog.enabled
+type: application
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+# Versions are expected to follow Semantic Versioning (https://semver.org/)
+version: 0.6.0
+# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application. Versions are not expected to
+# follow Semantic Versioning. They should reflect the version the application is using.
+# It is recommended to use it with quotes.
+appVersion: "v0.12.2"

@@ -1,0 +1,141 @@
+{{- $temporalValues := index .Values "temporal" }}
+{{- if and .Values.schema.create.enabled (not .Values.deploy.enabled) .Release.IsInstall }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "deploy.schema.create.config.name" . }}
+data:
+  {{- $currentScope := . }}
+  {{- $directory := "pgSetup" }}
+  {{- $fileList :=  list "main.go" "go.mod" "go.sum" }}
+  {{- with $currentScope }}
+  {{- range $fileName := $fileList}}
+  {{ $fileName }}: |
+  {{- $.Files.Get (printf "%s/%s" $directory $fileName ) | nindent 4 }}
+  {{- end }}
+  {{- end }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: temporal-schema-create
+  labels:
+    app.kubernetes.io/name: temporal-schema-create
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" }}
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+spec:
+  backoffLimit: {{ .Values.schema.setup.backoffLimit }}
+  template:
+    metadata:
+      name: temporal-schema-create
+      labels:
+        app.kubernetes.io/name: temporal-schema-create
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" }}
+        app.kubernetes.io/component: database
+        app.kubernetes.io/part-of: {{ .Chart.Name }}
+    spec:
+      restartPolicy: "OnFailure"
+      # TODO Migrate to pre-built image
+      {{- with .Values.common.pods.affinity }}
+      affinity:
+      {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.common.pods.nodeSelector }}
+      nodeSelector:
+      {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.common.pods.tolerations }}
+      tolerations:
+      {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.common.pods.imagePullSecrets }}
+      imagePullSecrets:
+        {{- . | toYaml | nindent 10 }}
+      {{- end }}
+      initContainers:
+        - name: go-build
+          image: "{{ .Values.schema.setup.pods.init.image.repository }}:{{ .Values.schema.setup.pods.init.image.tag }}"
+          imagePullPolicy: "IfNotPresent"
+          command: ['go', 'build', '-C', '/source', '-ldflags', '-s -w', '-o', '/build/run', 'main.go']
+          volumeMounts:
+            - mountPath: "/source"
+              name: "go-source-files"
+            - mountPath: "/build"
+              name: "go-build-files"
+      containers:
+        - name: "temporal-schema-create"
+          image: "{{ .Values.schema.setup.pods.schemaCreate.repository }}:{{ .Values.schema.setup.pods.schemaCreate.tag }}"
+          imagePullPolicy: "IfNotPresent"
+          command: ['/build/run']
+          env:
+            - name: PG_HOST
+              value: {{ .Values.credentials.pgHost | quote }}
+            - name: PG_PORT
+              value: {{ .Values.credentials.pgPort | quote}}
+            - name: PG_USER
+              {{- if and .Values.credentials.admin.existingSecret .Values.credentials.admin.existingSecretEnabledFields.user }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.credentials.admin.existingSecret }}
+                  key: "user"
+              {{- else }}
+              value: {{ .Values.credentials.admin.user | quote }}
+              {{- end }}
+            - name: PG_PASSWORD
+              {{- if .Values.credentials.admin.existingSecret }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.credentials.admin.existingSecret }}
+                  key: "password"
+              {{- else }}
+              value: {{ .Values.credentials.admin.password | quote }}
+              {{- end }}
+            - name: PG_DATABASE
+              value: {{ .Values.credentials.admin.database | quote }}
+            - name: TEMPORAL_USER
+              {{- if and .Values.credentials.default.existingSecret .Values.credentials.default.existingSecretEnabledFields.user }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.credentials.default.existingSecret }}
+                  key: "user"
+              {{- else }}
+              value: {{ .Values.credentials.default.user | quote }}
+              {{- end }}
+            - name: TEMPORAL_PASSWORD
+              {{- if .Values.credentials.default.existingSecret }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.credentials.default.existingSecret }}
+                  key: "password"
+              {{- else }}
+              value: {{ .Values.credentials.default.password | quote }}
+              {{- end }}
+            - name: TEMPORAL_DB
+              value: {{ .Values.credentials.default.database | quote }}
+            - name: TEMPORAL_VISIBILITY_DB
+              value: {{ .Values.credentials.visibility.database | quote }}
+            - name: PEERDB_CATALOG_DATABASE
+              value: {{ .Values.credentials.catalog.database | quote }}
+            - name: ASSUME_YES
+              value: "true"
+            - name: TEMPORAL_DEPLOY_ENABLED
+              value: {{ .Values.temporal.deploy.enabled | quote }}
+          volumeMounts:
+            - mountPath: "/build"
+              name: "go-build-files"
+          {{- with .Values.schema.create.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: "go-source-files"
+          configMap:
+            name: {{ include "deploy.schema.create.config.name" . }}
+        - name: "go-build-files"
+          emptyDir: {}
+{{- end }}

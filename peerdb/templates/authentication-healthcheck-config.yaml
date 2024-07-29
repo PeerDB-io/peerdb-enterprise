@@ -1,0 +1,11 @@
+{{- if .Values.authentication.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "authentication.healthcheck.config.name" . }}
+  labels:
+    {{- include "authentication.labels" . | nindent 4 }}
+data:
+  health.sh: |
+{{ include "authentication.healthcheck.data" . | nindent 4 }}
+{{- end -}}

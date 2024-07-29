@@ -1,0 +1,76 @@
+peerdb:
+  catalog:
+    pgDatabase: peerdb
+    pgAdminDatabase: postgres
+    deploy:
+      enabled: false
+    existingSecret: peerdb-db
+  temporal:
+    namespace: peerdb
+    releaseName: peerdb-temporal
+    host: peerdb-temporal-deploy-frontend.peerdb.svc.cluster.local
+    deploy:
+      enabled: true
+  peerdb:
+    credentials:
+      password: redacted
+    version: stable-v0.12.2
+  flowWorker:
+    replicaCount: 2
+  flowApi:
+    replicaCount: 2
+  peerdbUI:
+    replicaCount: 1
+    credentials:
+      password: redacted
+      nexauth_secret: redacted
+    service:
+      url: http(s)://external-dns-or-ip-of-peerdb-ui.com:port
+      type: ClusterIP
+  serviceAccount:
+    name: peerdb-sa
+  authentication:
+    enabled: false
+  temporal-deploy:
+    server:
+      config:
+        persistence:
+          default:
+            sql:
+              user: peerdb_temporal
+              existingSecret: temporal-db
+              database: peerdb_temporal
+              tls:
+                enabled: true
+              host: my-server.postgres.com
+              port: "5432"
+          visibility:
+            sql:
+              user: peerdb_temporal_visibility
+              existingSecret: temporal-visibility-db
+              database: peerdb_temporal_visibility
+              tls:
+                enabled: true
+              host: my-server.postgres.com
+              port: "5432"
+    web:
+      service:
+        type: ClusterIP
+    schema:
+      setup:
+        enabled: false
+      update:
+        enabled: false
+  datadog:
+    enabled: false
+global:
+  peerdb:
+    enterprise:
+      saveCustomerValuesAsSecret: true
+
+# Let's assume that the below secretStore (already available) uses SSM as its backend and the secret is json encoded. Docs: https://external-secrets.io/latest/provider/aws-parameter-store/
+secretsStore:
+  name: peerdb-secret-store
+  kind: SecretStore
+  refreshInterval: "0"
+  keyPrefix: /path/to/peerdb/secrets/prefix

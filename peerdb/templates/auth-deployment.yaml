@@ -1,0 +1,75 @@
+{{- if .Values.authentication.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "authentication.deploy.name" . }}
+  labels:
+    {{- include "authentication.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.authentication.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "authentication.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include "authentication.config.data" . | sha256sum }}
+        checksum/secret: {{ include "authentication.secret.data" . | sha256sum }}
+        checksum/healthcheck: {{ include "authentication.healthcheck.data" . | sha256sum }}
+      labels:
+        {{- include "authentication.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- if .Values.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ default 60 .Values.authentication.terminationGracePeriodSeconds }}
+
+      containers:
+        - name: nginx
+          image: "{{ .Values.authentication.image.repository }}:{{ .Values.authentication.image.tag }}"
+          imagePullPolicy: {{ .Values.authentication.image.pullPolicy }}
+          volumeMounts:
+            - mountPath: "/etc/nginx"
+              name: "authentication-config"
+            - mountPath: "/secrets/htpasswd"
+              name: "authentication-htpasswd"
+            - mountPath: "/healthcheck"
+              name: "authentication-healthcheck"
+          ports:
+            - containerPort: {{ .Values.authentication.service.targetPort }}
+              name: http
+            - containerPort: {{ .Values.peerdb.service.port }}
+              name: peerdb
+          livenessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - /healthcheck/health.sh
+            initialDelaySeconds: 10
+            periodSeconds: 3
+            timeoutSeconds: 60
+            failureThreshold: 3
+            terminationGracePeriodSeconds: 30
+          readinessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - /healthcheck/health.sh
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 180
+            failureThreshold: 3
+        {{- with .Values.authentication.resources }}
+          resources: {{ toYaml . | nindent 12 }}
+        {{- end }}
+      volumes:
+        - name: "authentication-config"
+          configMap:
+            name: {{ include "authentication.config.name" . }}
+        - name: "authentication-htpasswd"
+          secret:
+            secretName: {{ include "authentication.secret.name" . }}
+        - name: "authentication-healthcheck"
+          configMap:
+            name: {{ include "authentication.healthcheck.config.name" . }}
+{{- end -}}

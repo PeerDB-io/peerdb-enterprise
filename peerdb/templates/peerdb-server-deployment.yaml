@@ -1,0 +1,82 @@
+{{- if .Values.peerdb.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: peerdb-server
+  labels:
+    {{- include "component.labels" "peerdb-server" | nindent 4 }}
+    {{- include "peerdb.common.labels" . | nindent 4 }}
+    {{- with .Values.peerdb.deployment.labels }}
+    {{ . | toYaml | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with .Values.peerdb.deployment.annotations }}
+    {{ . | toYaml | nindent 4 }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.peerdb.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "component.labels" "peerdb-server" | nindent 6 }}
+      {{- include "peerdb.common.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "component.labels" "peerdb-server" | nindent 8 }}
+        {{- include "peerdb.common.labels" . | nindent 8 }}
+        {{- with .Values.peerdb.pods.labels }}
+        {{ . | toYaml | nindent 8 }}
+        {{- end }}
+      annotations:
+        {{- with .Values.peerdb.pods.annotations }}
+        {{ . | toYaml | nindent 8 }}
+        {{- end }}
+    spec:
+      terminationGracePeriodSeconds: {{ default 60 .Values.peerdb.terminationGracePeriodSeconds }}
+      {{- include "pods.affinity" (list $ "peerdb") | nindent 6 }}
+      {{- include "pods.nodeSelector" (list $ "peerdb") | nindent 6 }}
+      {{- include "pods.tolerations" (list $ "peerdb") | nindent 6 }}
+      {{- include "pods.imagePullSecrets" (list $ "peerdb") | nindent 6 }}
+      containers:
+      - name: peerdb-server
+        image: "{{ .Values.peerdb.image.repository }}:{{ .Values.peerdb.version }}"
+        imagePullPolicy: {{ .Values.peerdb.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.peerdb.service.targetPort }}
+          name: api
+        env:
+        # catalog config
+        {{- include "catalog.pgConf" . | nindent 8 }}
+        - name: PEERDB_LOG_DIR
+          value: {{ .Values.peerdb.env.logDir }}
+        - name: PEERDB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: SERVER_PEERDB_PASSWORD
+              name: peerdb-server-ui-secret
+        # flow server config
+        - name: PEERDB_FLOW_SERVER_ADDRESS
+          value: "http://flow-api:{{ .Values.flowApi.service.port }}"
+        {{- with .Values.peerdb.extraEnv -}}
+        {{ . | toYaml | nindent 8}}
+        {{- end }}
+        livenessProbe:
+          tcpSocket:
+            port: api
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          failureThreshold: 3
+          terminationGracePeriodSeconds: 30
+        # KISS: this deployment depends on flow-api readiness, auto-resolve readiness wih initialDelay for now
+        # Use init-container instead: https://stackoverflow.com/questions/51079849/kubernetes-wait-for-other-pod-to-be-ready
+        readinessProbe:
+          tcpSocket:
+            port: api
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          failureThreshold: 3
+
+        {{- with .Values.peerdb.resources }}
+        resources: {{ toYaml . | nindent 10 }}
+        {{- end }}
+{{- end -}}

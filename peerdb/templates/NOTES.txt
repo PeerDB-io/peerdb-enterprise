@@ -1,0 +1,3 @@
+{{- if .Values.authentication.enabled -}}
+Since you have authentication enabled, please add DNS entries starting with {{ if .Values.temporal.deploy.enabled }}`temporal.`{{ end }}, `peerdb.` and `peerdb-ui.` pointing to the LoadBalancer IP/CNAME for {{ include "authentication.service.name" . }}
+{{- end -}}

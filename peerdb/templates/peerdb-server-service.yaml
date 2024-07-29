@@ -1,0 +1,23 @@
+{{- if .Values.peerdb.service.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.peerdb.service.name }}
+  labels:
+    {{- include "component.labels" "peerdb-server" | nindent 4 }}
+    {{- include "peerdb.common.labels" . | nindent 4 }}
+  annotations:
+    {{- .Values.peerdb.service.annotations | toYaml | nindent 4 }}
+  # annotations:
+  #   service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "3600"
+  #   service.beta.kubernetes.io/azure-load-balancer-idle-timeout: "3600"
+spec:
+  type: {{ .Values.peerdb.service.type }}
+  ports:
+    - port: {{ .Values.peerdb.service.port }}
+      targetPort: {{ .Values.peerdb.service.targetPort }}
+      protocol: TCP
+  selector:
+    {{- include "component.labels" "peerdb-server" | nindent 4 }}
+    {{- include "peerdb.common.selectorLabels" . | nindent 4 }}
+{{- end }}

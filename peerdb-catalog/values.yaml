@@ -1,0 +1,169 @@
+credentials:
+  default:
+    user: _TEMPORAL_DEFAULT_USER_
+    password: _TEMPORAL_DEFAULT_PASSWORD_
+    database: _TEMPORAL_DEFAULT_DATABASE_
+    # -- Use an existing secret for the temporal default user. Use this when saving credentials to values.yaml is not desired
+    existingSecret: ""
+    existingSecretEnabledFields:
+      # -- Whether to use the user field from the existing secret
+      user: false
+
+  visibility:
+    user: _TEMPORAL_VISIBILITY_USER_
+    password: _TEMPORAL_VISIBILITY_PASSWORD_
+    database: _TEMPORAL_VISIBILITY_DATABASE_
+    # -- Use an existing secret for the temporal visibility user. Use this when saving credentials to values.yaml is not desired
+    existingSecret: ""
+    existingSecretEnabledFields:
+      # -- Whether to use the user field from the existing secret
+      user: false
+
+  admin:
+    user: _TEMPORAL_ADMIN_USER_
+    password: _TEMPORAL_ADMIN_PASSWORD_
+    database: _TEMPORAL_ADMIN_DATABASE_
+    # -- Use an existing secret for the temporal admin user. Use this when saving credentials to values.yaml is not desired
+    existingSecret: ""
+    existingSecretEnabledFields:
+      # -- Whether to use the user field from the existing secret
+      user: false
+
+  catalog:
+    database: _CATALOG_DATABASE_
+  pgHost: _PG_HOST_
+  pgPort: _PG_PORT_
+  secretName: _CATALOG_DB_MANUAL_CREDS_NAME_
+  ssl:
+    enabled: _TEMPORAL_SSL_MODE_
+    type: _
+    path: _TEMPORAL_SSL_CA_CERT_PATH_
+    # -- Use an existing secret for the catalog ssl certificate to use for catalog. Generally used when a custom SSL certificate is needed
+    existingSecret: ""
+
+#  pgUser: _PG_USER_
+#  pgPassword: _PG_PASSWORD_
+#  pgDatabase: _PG_DATABASE_
+#  pgAdminDatabase: _PG_ADMIN_DATABASE_
+
+deploy:
+  enabled: true
+  version: 15
+  replicaCount: 3
+  clusterName: _PG_CLUSTER_NAME_
+  user:
+    # Maybe make this more restrictive, but migrations are run on startup
+    options: "SUPERUSER"
+  instance:
+    volume:
+      resources:
+        requests:
+          # -- Storage size for the catalog instance, refer to Crunchy PGO for more details
+          storage: 128Gi
+  backups:
+    volume:
+      resources:
+        requests:
+          # -- Storage size for the catalog backups, refer to Crunchy PGO for more details
+          storage: 384Gi
+  resources:
+    requests:
+      cpu: 2
+      memory: 2Gi
+    limits:
+      cpu: 2
+      memory: 2Gi
+
+schema:
+  create:
+    #  -- Whether to create the databases required for catalog, temporal. It is not used in case of in-cluster catalog, as init.sql is used on startup
+    enabled: true
+    resources:
+      requests:
+        cpu: 0.5
+        memory: 512Mi
+      limits:
+        cpu: 0.5
+        memory: 512Mi
+  setup:
+    hook:
+      enabled: false
+    # -- Whether to enable the schema setup job for temporal, it is recommended to have it enabled
+    enabled: true
+    backoffLimit: 100
+    debug: false
+    pods:
+      init:
+        image:
+          repository: golang
+          tag: alpine
+      schemaCreate:
+        repository: alpine
+        tag: latest
+  update:
+    hook:
+      enabled: true
+      type: "pre-upgrade"
+    # -- Whether to enable the schema update job for temporal, it is recommended to have it enabled
+    enabled: true
+    backoffLimit: 100
+  test:
+    image:
+      repository: postgres
+      tag: latest
+  resources:
+    requests:
+      cpu: 0.5
+      memory: 512Mi
+    limits:
+      cpu: 0.5
+      memory: 512Mi
+
+temporal:
+  deploy:
+    enabled: true
+  tls:
+    enabled: _TEMPORAL_SSL_MODE_
+  admintools:
+    image:
+      repository: temporalio/admin-tools
+      # -- This should be set from the helm values for temporal dependency from the main chart
+      tag: 1.24.2
+      pullPolicy: IfNotPresent
+
+
+
+pgo:
+  singleNamespace: true
+  resources:
+    controller:
+      requests:
+        cpu: 1
+        memory: 512Mi
+        ephemeral-storage: 1Gi
+      limits:
+        cpu: 1
+        memory: 512Mi
+        ephemeral-storage: 2Gi
+  debug: true
+  disable_check_for_upgrades: false
+  patroni:
+    allowed_cidr:
+      - 0.0.0.0/0
+
+common:
+  pods:
+    # -- node selector that will be applied to all the catalog related services additively
+    nodeSelector: { }
+    # -- tolerations that will be applied to all the catalog related services additively
+    tolerations: [ ]
+    # -- affinity that will be applied to all the catalog related services additively
+    affinity: { }
+    # -- image pull secrets that will be applied to all the catalog related services additively
+    imagePullSecrets: []
+
+global:
+  peerdb:
+    enterprise:
+      # -- Whether to save customer values as a kubernetes secret for backup, pulled from `SAVE_VALUES_AS_SECRET` from .env
+      saveCustomerValuesAsSecret: _SAVE_VALUES_AS_SECRET_

@@ -1,0 +1,62 @@
+{{- $temporalValues := index .Values "temporal-deploy" }}
+{{- if and .Values.temporal.deploy.enabled .Release.IsInstall }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: temporal-namespace-register
+  labels:
+    {{- include "component.labels" "temporal-namespace-register" | nindent 4 }}
+    {{- include "peerdb.common.labels" . | nindent 4 }}
+spec:
+  backoffLimit: {{ .Values.temporal.deploy.registerNamespace.backoffLimit }}
+  template:
+    metadata:
+      name: temporal-namespace-register
+      labels:
+        {{- include "component.labels" "temporal-namespace-register" | nindent 8 }}
+        {{- include "peerdb.common.labels" . | nindent 8 }}
+    spec:
+      restartPolicy: "OnFailure"
+      {{- with .Values.common.pods.affinity }}
+      affinity:
+      {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.common.pods.nodeSelector }}
+      nodeSelector:
+      {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.common.pods.tolerations }}
+      tolerations:
+      {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.common.pods.imagePullSecrets }}
+      imagePullSecrets:
+        {{- . | toYaml | nindent 10 }}
+      {{- end }}
+      containers:
+        - name: register-namespace
+          image: "{{ $temporalValues.admintools.image.repository }}:{{ $temporalValues.admintools.image.tag }}"
+          imagePullPolicy: {{ $temporalValues.admintools.image.pullPolicy }}
+          command: [ 'sh', '-c', 'while ! tctl cluster health | grep -q ": SERVING$"; do tctl cluster health; sleep 3; done && tctl namespace list | grep -q "^Name: ${TEMPORAL_NAMESPACE}$" || tctl --namespace "${TEMPORAL_NAMESPACE}" namespace register' ]
+
+          env:
+            - name: TEMPORAL_NAMESPACE
+              value: {{ .Values.temporal.namespace | quote }}
+            - name: TEMPORAL_CLI_ADDRESS
+              value: "{{ .Release.Name }}-temporal-deploy-frontend:{{ $temporalValues.server.frontend.service.port }}"
+            - name: TEMPORAL_ADDRESS
+              value: "{{ .Release.Name }}-temporal-deploy-frontend:{{ $temporalValues.server.frontend.service.port }}"
+        {{- with .Values.temporal.deploy.registerNamespace.resources }}
+          resources:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- with .Values.temporal.deploy.registerNamespace.containerSecurityContext }}
+          securityContext:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+      {{- with .Values.temporal.deploy.registerNamespace.securityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+{{- end }}

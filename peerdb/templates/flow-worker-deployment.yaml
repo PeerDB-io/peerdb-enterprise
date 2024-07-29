@@ -1,0 +1,64 @@
+{{- if .Values.flowWorker.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flow-worker
+  labels:
+    {{- include "component.labels" "flow-worker" | nindent 4 }}
+    {{- include "peerdb.common.labels" . | nindent 4 }}
+    {{- with .Values.flowWorker.deployment.labels }}
+    {{ . | toYaml | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with .Values.flowWorker.deployment.annotations }}
+    {{ . | toYaml | nindent 4 }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.flowWorker.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "component.labels" "flow-worker" | nindent 6 }}
+      {{- include "peerdb.common.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "component.labels" "flow-worker" | nindent 8 }}
+        {{- include "peerdb.common.labels" . | nindent 8 }}
+        {{- with .Values.flowWorker.pods.labels }}
+        {{ . | toYaml | nindent 8 }}
+        {{- end }}
+      annotations:
+        {{- with .Values.flowWorker.pods.annotations }}
+        {{ . | toYaml | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- if .Values.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ default 60 .Values.flowWorker.terminationGracePeriodSeconds }}
+      {{- include "pods.affinity" (list $ "flowWorker") | nindent 6 }}
+      {{- include "pods.nodeSelector" (list $ "flowWorker") | nindent 6 }}
+      {{- include "pods.tolerations" (list $ "flowWorker") | nindent 6 }}
+      {{- include "pods.imagePullSecrets" (list $ "flowWorker") | nindent 6 }}
+      containers:
+      - name: flow-worker
+        image: "{{ .Values.flowWorker.image.repository }}:{{ .Values.flowWorker.version | default .Values.peerdb.version }}"
+        imagePullPolicy: {{ .Values.flowWorker.image.pullPolicy }}
+        env:
+        {{- include "aws.config" . | nindent 8 }}
+        {{- include "azure.config" . | nindent 8 }}
+        {{- include "catalog.pgConf" . | nindent 8 }}
+        {{- include "temporal.config" . | nindent 8 }}
+        {{- if .Values.pyroscope.enabled }}
+        - name: PYROSCOPE_SERVER_ADDRESS
+          value: 'http://pyroscope:4040'
+        - name: ENABLE_PROFILING
+          value: 'true'
+        {{- end }}
+        {{- with .Values.flowWorker.extraEnv -}}
+        {{ . | toYaml | nindent 8}}
+        {{- end }}
+        {{- with .Values.flowWorker.resources }}
+        resources: {{ toYaml . | nindent 10 }}
+        {{- end }}
+{{- end -}}

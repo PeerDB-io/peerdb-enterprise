@@ -1,0 +1,17 @@
+{{- define "authentication.healthcheck.data" -}}
+
+#!/usr/bin/env bash
+
+{{/*# Enables healthcheck to all backends*/}}
+{{/*curl -fsS --fail-early --max-time {{ .Values.authentication.healthcheck.script.timeoutSeconds | quote }} --parallel \*/}}
+{{/*    "http://localhost:{{- .Values.authentication.service.targetPort -}}{{- .Values.authentication.healthcheck.path }}" \*/}}
+{{/*    "{{ include "authentication.peerdb-ui.service.fqdn-with-port" . }}" \*/}}
+{{/*    "{{ include "authentication.temporal.service.fqdn-with-port" . }}"*/}}
+
+# TODO add healthcheck for peerdb nginx TCP proxy
+# Checks only the current nginx backend
+curl -fsS --fail-early --max-time {{ .Values.authentication.healthcheck.script.timeoutSeconds | quote }} --parallel \
+    "http://localhost:{{- .Values.authentication.service.targetPort -}}{{- .Values.authentication.healthcheck.path }}" # "http://localhost:{{- .Values.peerdb.service.targetPort -}}{{- .Values.authentication.healthcheck.path }}"
+
+
+{{- end -}}
