@@ -1,0 +1,39 @@
+name: Check docs
+
+
+# Do not change this
+concurrency: check-docs-helm
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+
+jobs:
+  check-docs-helm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check docs
+        run: |
+          docker run -v "$PWD:/helm-docs" -u $(id -u) jnorwood/helm-docs:latest -c peerdb -d > README.md.peerdb.new
+          docker run -v "$PWD:/helm-docs" -u $(id -u) jnorwood/helm-docs:latest -c peerdb-catalog -d > README.md.catalog.new
+          exit_status=0
+          diff -q README.md.peerdb.new peerdb/README.md || exit_status=$?
+          if [ "$exit_status" != "0" ]; then
+            echo "::error file=peerdb/README.md,line=1,col=1,endColumn=1::Outdated documentation, run '"'`docker run -v "$PWD:/helm-docs" -u $(id -u) jnorwood/helm-docs:latest -c peerdb`'"' to update."
+            echo "::error file=peerdb/values.yaml,line=1,col=1,endColumn=1::Outdated documentation, run '"'`docker run -v "$PWD:/helm-docs" -u $(id -u) jnorwood/helm-docs:latest -c peerdb`'"' to update."
+            exit 1
+          fi
+          diff -q README.md.catalog.new peerdb-catalog/README.md || exit_status=$?
+          if [ "$exit_status" != "0" ]; then
+            echo "::error file=peerdb-catalog/README.md,line=1,col=1,endColumn=1::Outdated documentation, run '"'`docker run -v "$PWD:/helm-docs" -u $(id -u) jnorwood/helm-docs:latest -c peerdb-catalog`'"' to update."
+            echo "::error file=peerdb-catalog/values.yaml,line=1,col=1,endColumn=1::Outdated documentation, run '"'`docker run -v "$PWD:/helm-docs" -u $(id -u) jnorwood/helm-docs:latest -c peerdb-catalog`'"' to update."
+            exit 1
+          fi

@@ -1,0 +1,66 @@
+name: Release Charts
+
+# Can be run via `gh workflow run release-charts.yml -f chartName=<peerdb|peerdb-catalog>`
+
+# Do not change this
+concurrency: release-helm
+
+on:
+  workflow_dispatch:
+    inputs:
+      chartName:
+        type: choice
+        description: Chart to Release
+        required: true
+        options:
+          - peerdb
+          - peerdb-catalog
+
+jobs:
+  release-chart:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          path: 'src'
+          fetch-depth: 0
+          submodules: true
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: 'dest'
+          ref: 'gh-pages'
+          fetch-depth: 0
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+
+      - name: Package Helm Charts
+        shell: bash
+        run: |
+          set -e
+          declare -a chartNames=(
+                "${{ github.event.inputs.chartName }}" 
+          )
+          for chart in "${chartNames[@]}"
+          do
+            test -f dest/$(helm show chart "src/${chart}" | yq '.name + "-"  +  .version + ".tgz"') && echo "Existing Chart with same version found" 2>&1 && exit 1
+            echo "Updating and packaging ${chart}"
+            helm dep up "src/${chart}"
+            helm package "src/${chart}" -u -d dest
+          done
+      - name: Push New Files
+        shell: bash
+        working-directory: dest
+        run: |
+          set -e
+          helm repo index . --url https://raw.githubusercontent.com/${{ github.repository }}/gh-pages
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git add $(git ls-files -o --exclude-standard)
+          git add index.yaml
+          git commit -m "Updated from ref: $GITHUB_SHA"
+          git push
