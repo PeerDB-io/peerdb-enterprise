@@ -95,7 +95,7 @@ A Helm chart for Kubernetes
 | schema.update.hook.type | string | `"pre-upgrade"` |  |
 | temporal.admintools.image.pullPolicy | string | `"IfNotPresent"` |  |
 | temporal.admintools.image.repository | string | `"temporalio/admin-tools"` |  |
-| temporal.admintools.image.tag | string | `"1.24.2"` | This should be set from the helm values for temporal dependency from the main chart |
+| temporal.admintools.image.tag | string | `"1.24.2.1-tctl-1.18.1-cli-0.13.2"` | This should be set from the helm values for temporal dependency from the main chart |
 | temporal.deploy.enabled | bool | `true` |  |
 | temporal.tls.enabled | string | `"_TEMPORAL_SSL_MODE_"` |  |
 
