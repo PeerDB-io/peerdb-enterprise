@@ -14,7 +14,7 @@
 
 At PeerDB, we are building a fast, simple and the most cost effective way to stream data from Postgres to a host of Data Warehouses, Queues and Storage Engines. If you are running Postgres at the heart of your data-stack and move data at scale from Postgres to any of the above targets, PeerDB can provide value.
 
-[PeerDB was acquired by ClickHouse](link to blog) in July 2024. As part of this acquisition, we're making public the repository that contains the Helm charts used for deploying our Enterprise offering. This will enable people to self-host PeerDB in a more reliable and scaleable manner.
+[PeerDB was acquired by ClickHouse](https://blog.peerdb.io/clickhouse-acquires-peerdb-for-native-postgres-cdc-integration) in July 2024. As part of this acquisition, we're making public the repository that contains the Helm charts used for deploying our Enterprise offering. This will enable people to self-host PeerDB in a more reliable and scaleable manner.
 
 ## Overview
 
