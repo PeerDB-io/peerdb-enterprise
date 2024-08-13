@@ -34,6 +34,14 @@ After following the POC guide from the [QuickStart under README.md](README.md), 
 4. The charts can be further used as subchart dependencies to include more manifests to include configuration like `ExternalSecrets`, `NetworkPolicies`, `PodSecurityPolicies`, etc.
 
 
+## Accessing the Packaged Helm Charts
+
+The Helm Charts are available via the GitHub Pages site of this repo and can be accessed via the following:
+```yaml
+name: <peerdb|peerdb-catalog>
+repository: https://peerdb-io.github.io/peerdb-enterprise
+```
+
 ## Examples of production setups
 
 Example production setups can be seen in the [`examples`](examples) directory.
