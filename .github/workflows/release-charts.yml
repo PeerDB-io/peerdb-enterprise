@@ -16,6 +16,9 @@ on:
           - peerdb
           - peerdb-catalog
 
+env:
+  HELM_REPO_URL: "https://peerdb-io.github.io/peerdb-enterprise"
+
 jobs:
   release-chart:
     permissions:
@@ -49,6 +52,7 @@ jobs:
           do
             test -f dest/$(helm show chart "src/${chart}" | yq '.name + "-"  +  .version + ".tgz"') && echo "Existing Chart with same version found" 2>&1 && exit 1
             echo "Updating and packaging ${chart}"
+            cp src/LICENSE.md src/${chart}/
             helm dep up "src/${chart}"
             helm package "src/${chart}" -u -d dest
           done
@@ -57,7 +61,7 @@ jobs:
         working-directory: dest
         run: |
           set -e
-          helm repo index . --url https://raw.githubusercontent.com/${{ github.repository }}/gh-pages
+          helm repo index . --url "${{ env.HELM_REPO_URL }}"
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
           git add $(git ls-files -o --exclude-standard)
