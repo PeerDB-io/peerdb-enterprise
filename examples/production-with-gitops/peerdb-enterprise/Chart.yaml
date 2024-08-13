@@ -25,5 +25,5 @@ appVersion: "1.16.0"
 
 dependencies:
   - name: peerdb
-    version: 0.5.0
-    repository: https://raw.githubusercontent.com/Peerdb-io/enterprise/gh-pages
+    version: 0.6.0
+    repository: https://peerdb-io.github.io/peerdb-enterprise
