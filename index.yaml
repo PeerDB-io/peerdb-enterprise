@@ -3,7 +3,7 @@ entries:
   peerdb:
   - apiVersion: v2
     appVersion: v0.12.2
-    created: "2024-08-13T07:34:07.940251525Z"
+    created: "2024-08-13T07:34:48.618700474Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -31,4 +31,25 @@ entries:
     urls:
     - https://peerdb-io.github.io/peerdb-enterprise/peerdb-0.6.0.tgz
     version: 0.6.0
-generated: "2024-08-13T07:34:07.913308997Z"
+  peerdb-catalog:
+  - apiVersion: v2
+    appVersion: v0.12.2
+    created: "2024-08-13T07:34:48.625732242Z"
+    dependencies:
+    - condition: deploy.enabled
+      name: pgo
+      repository: oci://registry.developers.crunchydata.com/crunchydata
+      version: 5.5.0
+    description: A Helm chart for Kubernetes
+    digest: e6784e5b68690811ae9f6fb201a565a1079c20e7264f33b559ddbe77e6fa5ff6
+    maintainers:
+    - name: PeerDB Inc.
+      url: https://peerdb.io/
+    - email: kunal@peerdb.io
+      name: Kunal Gupta
+    name: peerdb-catalog
+    type: application
+    urls:
+    - https://peerdb-io.github.io/peerdb-enterprise/peerdb-catalog-0.6.0.tgz
+    version: 0.6.0
+generated: "2024-08-13T07:34:48.592170584Z"
