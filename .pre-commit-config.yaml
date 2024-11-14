@@ -1,0 +1,9 @@
+repos:
+  - repo: https://github.com/norwoodj/helm-docs
+    rev: v1.14.2
+    hooks:
+      - id: helm-docs-container
+        name: helm-docs
+        args:
+          - --chart-search-root=.
+          - --chart-to-generate=peerdb,peerdb-catalog
