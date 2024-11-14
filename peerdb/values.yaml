@@ -299,7 +299,8 @@ peerdb:
     # -- annotations that will be applied to the peerdb-server deployment, NOT the pods
     annotations: { }
   replicaCount: 4
-  version: stable-v0.12.1
+  # -- This version is overridden by .env file if the install_peerdb.sh script is being used
+  version: stable-v0.19.1
   image:
     repository: ghcr.io/peerdb-io/peerdb-server
     pullPolicy: Always
