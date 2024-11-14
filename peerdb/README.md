@@ -177,7 +177,7 @@ Install PeerDB along with Temporal.
 | peerdb.service.port | int | `9900` |  |
 | peerdb.service.targetPort | int | `9900` |  |
 | peerdb.service.type | string | `"ClusterIP"` |  |
-| peerdb.version | string | `"stable-v0.19.1"` | This version is overridden by .env file if the install_peerdb.sh script is being used |
+| peerdb.version | string | `"stable-v0.19.1"` | This version is overridden by .env file if the install_peerdb.sh script is being used In that case, either update the .env file or override it via values.customer.yaml when installing |
 | peerdbUI.credentials.nexauth_secret | string | `""` |  |
 | peerdbUI.credentials.password | string | `"_PEERDB_PASSWORD_"` |  |
 | peerdbUI.deployment.annotations | object | `{}` | annotations that will be applied to the peerdbUI deployment, NOT the pods |
