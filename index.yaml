@@ -3,7 +3,7 @@ entries:
   peerdb:
   - apiVersion: v2
     appVersion: v0.22.1
-    created: "2025-01-07T17:48:47.362209612Z"
+    created: "2025-01-07T17:49:10.413264978Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -33,7 +33,7 @@ entries:
     version: 0.8.0
   - apiVersion: v2
     appVersion: v0.12.2
-    created: "2025-01-07T17:48:47.336333487Z"
+    created: "2025-01-07T17:49:10.387288194Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -63,7 +63,7 @@ entries:
     version: 0.7.0
   - apiVersion: v2
     appVersion: v0.12.2
-    created: "2025-01-07T17:48:47.309470178Z"
+    created: "2025-01-07T17:49:10.360749936Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -93,8 +93,28 @@ entries:
     version: 0.6.0
   peerdb-catalog:
   - apiVersion: v2
+    appVersion: v0.22.1
+    created: "2025-01-07T17:49:10.432865704Z"
+    dependencies:
+    - condition: deploy.enabled
+      name: pgo
+      repository: oci://registry.developers.crunchydata.com/crunchydata
+      version: 5.5.0
+    description: A Helm chart for Kubernetes
+    digest: 02122a29bc0552c4cb78469fa4060a27cd5a9bd32a95be4139f21e2083adc4ce
+    maintainers:
+    - name: PeerDB Inc.
+      url: https://peerdb.io/
+    - email: kunal@peerdb.io
+      name: Kunal Gupta
+    name: peerdb-catalog
+    type: application
+    urls:
+    - https://peerdb-io.github.io/peerdb-enterprise/peerdb-catalog-0.8.0.tgz
+    version: 0.8.0
+  - apiVersion: v2
     appVersion: v0.12.2
-    created: "2025-01-07T17:48:47.375383263Z"
+    created: "2025-01-07T17:49:10.426212759Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -114,7 +134,7 @@ entries:
     version: 0.7.0
   - apiVersion: v2
     appVersion: v0.12.2
-    created: "2025-01-07T17:48:47.368490546Z"
+    created: "2025-01-07T17:49:10.419496526Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -132,4 +152,4 @@ entries:
     urls:
     - https://peerdb-io.github.io/peerdb-enterprise/peerdb-catalog-0.6.0.tgz
     version: 0.6.0
-generated: "2025-01-07T17:48:47.283178932Z"
+generated: "2025-01-07T17:49:10.334115919Z"
