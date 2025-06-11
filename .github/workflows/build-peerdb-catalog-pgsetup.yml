@@ -1,0 +1,37 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Build Go peerdb-catalog/pgSetup
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+    - "peerdb-catalog/pgSetup/**"
+    - ".github/workflows/go.yml"
+  pull_request:
+    branches: [ "main" ]
+    paths:
+    - "peerdb-catalog/pgSetup/**"
+    - ".github/workflows/go.yml"
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.24.4'
+        cache-dependency-path: peerdb-catalog/pgSetup/go.sum
+
+
+    - name: Build
+      working-directory: ./peerdb-catalog/pgSetup
+      run: go build -v ./...
+
+    - name: Test
+      working-directory: ./peerdb-catalog/pgSetup
+      run: go test -v ./...
