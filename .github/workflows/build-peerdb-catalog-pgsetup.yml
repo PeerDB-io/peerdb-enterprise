@@ -8,8 +8,12 @@ on:
     branches: [ "main" ]
     paths:
     - "peerdb-catalog/pgSetup/**"
+    - ".github/workflows/go.yml"
   pull_request:
     branches: [ "main" ]
+    paths:
+    - "peerdb-catalog/pgSetup/**"
+    - ".github/workflows/go.yml"
 jobs:
 
   build:
