@@ -32,7 +32,7 @@ jobs:
       - name: Update PeerDB version
         run: |
           set -eo pipefail
-          sed -iE 's:(^PEERDB_VERSION=).*?($):\1stable-${{ env.UPDATE_PEERDB_VERSION }}\2:g' .env.template
+          sed -i -E 's:(^PEERDB_VERSION=).*?($):\1stable-${{ env.UPDATE_PEERDB_VERSION }}\2:g' .env.template
           yq -e -i '.appVersion = strenv(UPDATE_PEERDB_VERSION)' peerdb/Chart.yaml
           yq -e -i '.appVersion = strenv(UPDATE_PEERDB_VERSION)' peerdb-catalog/Chart.yaml
           yq -e -i '.peerdb.version = strenv(UPDATE_PEERDB_VERSION)' peerdb/values.yaml
