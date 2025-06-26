@@ -49,8 +49,8 @@ jobs:
           yq -e -i '.version = "${{ steps.version.outputs.next_version }}"' peerdb-catalog/Chart.yaml
       - name: Update helm-docs for both charts
         run: |
-          docker run -v "$PWD:/helm-docs" -u $(id -u) jnorwood/helm-docs:latest -c peerdb -d > README.md
-          docker run -v "$PWD:/helm-docs" -u $(id -u) jnorwood/helm-docs:latest -c peerdb-catalog -d > README.md
+          docker run -v "$PWD:/helm-docs" -u $(id -u) jnorwood/helm-docs:latest -c peerdb -d > peerdb/README.md
+          docker run -v "$PWD:/helm-docs" -u $(id -u) jnorwood/helm-docs:latest -c peerdb-catalog -d > peerdb-catalog/README.md
       - name: Commit changes
         run: |
           git config --global user.name "DevOps Bot"
