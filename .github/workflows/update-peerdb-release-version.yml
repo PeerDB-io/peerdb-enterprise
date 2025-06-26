@@ -3,14 +3,14 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Latest PeerDB release version to update in the chart. Add the v prefix. E.g. `v0.22.1`'
+        description: 'Latest PeerDB release version to update in the chart. Add the v prefix. E.g. `v0.22.1`. Leave it to `latest` to pull and use the latest PeerDB release version.'
         required: true
+        default: 'latest'
 
 jobs:
   update-peerdb-release-version:
     runs-on: ubuntu-latest
     env:
-      PEERDB_VERSION: ${{ github.event.inputs.version }}
       PR_BRANCH: automated/peerdb-release-version-update
       PR_LABEL: automated/peerdb-release-version-update
       PR_TITLE: "feat: upgrade PeerDB release version in enterprise charts"
@@ -18,13 +18,20 @@ jobs:
     steps:
       - name: validate version input
         run: |
-          if [[ ! "${{ github.event.inputs.version }}" =~ ^v.* ]]; then
-          echo "Error: Version must start with 'v'."
+          if [[ ! "${{ github.event.inputs.version }}" =~ ^v.* || ! "${{ github.event.inputs.version }}" = "latest" ]]; then
+          echo "Error: Version must start with 'v' or be 'latest'."
           exit 1
           fi
+          echo "PEERDB_VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+      - name: Pull latest PeerDB release version
+        if: ${{ github.event.inputs.version == 'latest' }}
+        run: |
+          set -eo pipefail
+          LATEST_PEERDB_VERSION=$(curl -sf https://api.github.com/repos/peerdb-io/peerdb/releases/latest | jq -r '.tag_name')
+          echo "PEERDB_VERSION=${LATEST_PEERDB_VERSION}" >> $GITHUB_ENV
       - name: Prefix with stable-
         run: |
-          echo "UPDATE_PEERDB_VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+          echo "UPDATE_PEERDB_VERSION=stable-${{ env.PEERDB_VERSION }}" >> $GITHUB_ENV
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
