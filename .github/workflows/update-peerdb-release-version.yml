@@ -36,6 +36,17 @@ jobs:
           yq -e -i '.appVersion = strenv(UPDATE_PEERDB_VERSION)' peerdb/Chart.yaml
           yq -e -i '.appVersion = strenv(UPDATE_PEERDB_VERSION)' peerdb-catalog/Chart.yaml
           yq -e -i '.peerdb.version = strenv(UPDATE_PEERDB_VERSION)' peerdb/values.yaml
+      - name: Get next version
+        uses: reecetech/version-increment@2024.10.1
+        id: version
+        with:
+          scheme: semver
+          increment: patch
+      - name: Update Chart version
+        run: |
+          set -eo pipefail
+          yq -e -i '.version = "${{ steps.version.outputs.next_version }}"' peerdb/Chart.yaml
+          yq -e -i '.version = "${{ steps.version.outputs.next_version }}"' peerdb-catalog/Chart.yaml
       - name: Update helm-docs for both charts
         run: |
           docker run -v "$PWD:/helm-docs" -u $(id -u) jnorwood/helm-docs:latest -c peerdb -d > README.md
