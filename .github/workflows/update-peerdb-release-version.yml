@@ -1,0 +1,57 @@
+name: update-peerdb-release-version.yml
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Latest PeerDB release version to update in the chart. Add the v prefix. E.g. `v0.22.1`'
+        required: true
+
+jobs:
+  update-peerdb-release-version:
+    runs-on: ubuntu-latest
+    env:
+      PEERDB_VERSION: ${{ github.event.inputs.version }}
+      PR_BRANCH: automated/peerdb-release-version-update
+      PR_LABEL: automated/peerdb-release-version-update
+      PR_TITLE: "feat: upgrade PeerDB release version in enterprise charts"
+
+    steps:
+      - name: validate version input
+        run: |
+          if [[ ! "${{ github.event.inputs.version }}" =~ ^v.* ]]; then
+          echo "Error: Version must start with 'v'."
+          exit 1
+          fi
+      - name: Prefix with stable-
+        run: |
+          echo "UPDATE_PEERDB_VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: '${{ secrets.DEVOPS_BOT_GITHUB_TOKEN }}'
+      - name: Update PeerDB version
+        run: |
+          set -eo pipefail
+          sed -iE 's:(^PEERDB_VERSION=).*?($):\1stable-${{ env.UPDATE_PEERDB_VERSION }}\2:' .env.template
+          yq -e -i '.appVersion = strenv(UPDATE_PEERDB_VERSION)' peerdb/Chart.yaml
+          yq -e -i '.appVersion = strenv(UPDATE_PEERDB_VERSION)' peerdb-catalog/Chart.yaml
+          yq -e -i '.peerdb.version = strenv(UPDATE_PEERDB_VERSION)' peerdb/values.yaml
+      - name: Update helm-docs for both charts
+        run: |
+          docker run -v "$PWD:/helm-docs" -u $(id -u) jnorwood/helm-docs:latest -c peerdb -d > README.md
+          docker run -v "$PWD:/helm-docs" -u $(id -u) jnorwood/helm-docs:latest -c peerdb-catalog -d > README.md
+      - name: Commit changes
+        run: |
+          git config --global user.name "DevOps Bot"
+          git config --global user.email "peerdb-oss-devops-bot@clickhouse.com"
+          git add -u .
+          git checkout -b "${{ env.PR_BRANCH }}"
+          git fetch || true
+          git commit -m "feat: upgrade PeerDB release version to ${{ github.event.inputs.version }}"
+          git push -u origin "${{ env.PR_BRANCH }}" --force-with-lease
+          PR_ID=$(gh pr list --label "${PR_LABEL}" --head "${PR_BRANCH}" --json number | jq -r '.[0].number // ""')
+          if [ "$PR_ID" == "" ]; then
+            PR_ID=$(gh pr create -l "$PR_LABEL" -t "$PR_TITLE" --body "")
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.DEVOPS_BOT_GITHUB_TOKEN }}
