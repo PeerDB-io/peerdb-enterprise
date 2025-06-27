@@ -52,8 +52,8 @@ jobs:
       - name: Update Chart version
         run: |
           set -eo pipefail
-          yq -e -i '.version = "${{ steps.version.outputs.next_version }}"' peerdb/Chart.yaml
-          yq -e -i '.version = "${{ steps.version.outputs.next_version }}"' peerdb-catalog/Chart.yaml
+          yq -e -i '.version = "${{ steps.version.outputs.version }}"' peerdb/Chart.yaml
+          yq -e -i '.version = "${{ steps.version.outputs.version }}"' peerdb-catalog/Chart.yaml
       - name: Update helm-docs for both charts
         run: |
           docker run -v "$PWD:/helm-docs" -u $(id -u) jnorwood/helm-docs:latest -c peerdb -d > peerdb/README.md
