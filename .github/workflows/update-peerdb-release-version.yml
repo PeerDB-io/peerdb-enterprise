@@ -81,7 +81,7 @@ jobs:
           if [ "$PR_ID" == "" ]; then
             PR_ID=$(gh pr create -l "$PR_LABEL" -t "$PR_TITLE" --body "")
           fi
-          gh pr edit "$PR_ID" --body "This PR updates the PeerDB release version to `${{ env.PEERDB_VERSION }}` and the chart version to `${{ steps.version.outputs.version }}`.\n\nPlease review and merge it to update the charts."
+          gh pr edit "$PR_ID" --body 'This PR updates the PeerDB release version to `${{ env.PEERDB_VERSION }}` and the chart version to `${{ steps.version.outputs.version }}`.\n\nPlease review and merge it to update the charts.'
           gh pr merge "$PR_ID" --squash --auto
         env:
           GITHUB_TOKEN: ${{ secrets.DEVOPS_BOT_GITHUB_TOKEN }}
