@@ -6,6 +6,9 @@ on:
         description: 'Latest PeerDB release version to update in the chart. Add the v prefix. E.g. `v0.22.1`. Leave it to `latest` to pull and use the latest PeerDB release version.'
         required: true
         default: 'latest'
+  schedule:
+    # Run every Monday at 14:30 UTC
+    - cron: '30 14 * * 1'
 
 jobs:
   update-peerdb-release-version:
@@ -14,11 +17,12 @@ jobs:
       PR_BRANCH: automated/peerdb-release-version-update
       PR_LABEL: automated/peerdb-release-version-update
       PR_TITLE: "feat: upgrade PeerDB release version in enterprise charts"
+      PEERDB_INPUT_VERSION: ${{ github.event.inputs.version || 'latest' }}
 
     steps:
       - name: validate version input
         run: |
-          if [[ ! "${{ github.event.inputs.version }}" =~ ^v.* && ! "${{ github.event.inputs.version }}" = "latest" ]]; then
+          if [[ ! "${{ env.PEERDB_INPUT_VERSION }}" =~ ^v.* && ! "${{ env.PEERDB_INPUT_VERSION }}" = "latest" ]]; then
           echo "Error: Version must start with 'v' or be 'latest'."
           exit 1
           fi
@@ -43,22 +47,27 @@ jobs:
           yq -e -i '.appVersion = strenv(PEERDB_VERSION)' peerdb/Chart.yaml
           yq -e -i '.appVersion = strenv(PEERDB_VERSION)' peerdb-catalog/Chart.yaml
           yq -e -i '.peerdb.version = strenv(STABLE_PEERDB_VERSION)' peerdb/values.yaml
+          git diff --exit-code && echo "No changes to commit. Exiting." && exit 0 || echo "::set-output name=changes::true"
       - name: Get next version
+        if: ${{ steps.update-peerdb-version.outputs.changes == 'true' }}
         uses: reecetech/version-increment@2024.10.1
         id: version
         with:
           scheme: semver
           increment: patch
       - name: Update Chart version
+        if: ${{ steps.update-peerdb-version.outputs.changes == 'true' }}
         run: |
           set -eo pipefail
           yq -e -i '.version = "${{ steps.version.outputs.version }}"' peerdb/Chart.yaml
           yq -e -i '.version = "${{ steps.version.outputs.version }}"' peerdb-catalog/Chart.yaml
       - name: Update helm-docs for both charts
+        if: ${{ steps.update-peerdb-version.outputs.changes == 'true' }}
         run: |
           docker run -v "$PWD:/helm-docs" -u $(id -u) jnorwood/helm-docs:latest -c peerdb -d > peerdb/README.md
           docker run -v "$PWD:/helm-docs" -u $(id -u) jnorwood/helm-docs:latest -c peerdb-catalog -d > peerdb-catalog/README.md
       - name: Commit changes
+        if: ${{ steps.update-peerdb-version.outputs.changes == 'true' }}
         run: |
           git config --global user.name "DevOps Bot"
           git config --global user.email "peerdb-oss-devops-bot@clickhouse.com"
