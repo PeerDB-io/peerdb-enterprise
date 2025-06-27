@@ -374,8 +374,8 @@ temporal-deploy:
             maxConnLifetime: "1h"
             tls:
               enabled: _TEMPORAL_SSL_MODE_
-            #  enableHostVerification: true
-            #  serverName: _HOST_ # this is strictly required when using serverless CRDB offerings
+              #  enableHostVerification: true
+              #  serverName: _HOST_ # this is strictly required when using serverless CRDB offerings
         visibility:
           driver: "sql"
           sql:
