@@ -41,6 +41,7 @@ jobs:
         with:
           token: '${{ secrets.DEVOPS_BOT_GITHUB_TOKEN }}'
       - name: Update PeerDB version
+        id: update-peerdb-version
         run: |
           set -eo pipefail
           sed -i -E 's:(^PEERDB_VERSION=).*?($):\1${{ env.STABLE_PEERDB_VERSION }}\2:g' .env.template
