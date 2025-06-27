@@ -24,17 +24,14 @@ aws:
   secretAccessKey:
   region: _AWS_REGION_
   roleArn:
-
 azure:
   clientId:
   clientSecret:
   subscriptionId:
   tenantId:
-
 serviceAccount:
   create: true
   name:
-
 temporal:
   deploy:
     # -- Whether to deploy temporal, pulled from `TEMPORAL_DEPLOY_ENABLED` from .env
@@ -68,17 +65,15 @@ temporal:
   clientCert: _PEERDB_TEMPORAL_CLIENT_CERT_
   clientKey: _PEERDB_TEMPORAL_CLIENT_KEY_
   taskQueueId: _PEERDB_DEPLOYMENT_UID_
-
 pyroscope:
   enabled: false
-
 flowWorker:
   enabled: true
   extraEnv: []
   lowCost: false
   pods:
-    nodeSelector: { }
-    tolerations: [ ]
+    nodeSelector: {}
+    tolerations: []
     # -- flowWorker pod affinity, the default is to schedule flowWorker pods on different nodes than other flowWorker pods for High Availability
     affinity:
       podAntiAffinity:
@@ -93,14 +88,14 @@ flowWorker:
                       - flow-worker
               topologyKey: topology.kubernetes.io/zone
     # -- annotations that will be applied to all flowWorker pods, NOT the deployment
-    annotations: { }
+    annotations: {}
     # -- labels that will be applied to all flowWorker pods, NOT the deployment
-    labels: { }
+    labels: {}
   deployment:
     # -- labels that will be applied to the flowWorker deployment, NOT the pods
-    labels: { }
+    labels: {}
     # -- annotations that will be applied to the flowWorker deployment, NOT the pods
-    annotations: { }
+    annotations: {}
   replicaCount: 2
   image:
     repository: ghcr.io/peerdb-io/flow-worker
@@ -114,24 +109,23 @@ flowWorker:
       cpu: 4
       memory: 8Gi
       ephemeral-storage: 128Gi
-
 flowSnapshotWorker:
   enabled: true
   extraEnv: []
   lowCost: true
   pods:
-    nodeSelector: { }
-    tolerations: [ ]
-    affinity: { }
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
     # -- annotations that will be applied to all flowSnapshotWorker pods, NOT the statefulSet
-    annotations: { }
+    annotations: {}
     # -- labels that will be applied to all flowSnapshotWorker pods, NOT the statefulSet
-    labels: { }
+    labels: {}
   statefulSet:
     # -- labels that will be applied to the flowSnapshotWorker statefulSet, NOT the pods
-    labels: { }
+    labels: {}
     # -- annotations that will be applied to the flowSnapshotWorker statefulSet, NOT the pods
-    annotations: { }
+    annotations: {}
   replicaCount: 1
   image:
     repository: ghcr.io/peerdb-io/flow-snapshot-worker
@@ -147,15 +141,14 @@ flowSnapshotWorker:
       ephemeral-storage: 16Gi
   service:
     enabled: true
-    annotations: { }
-
+    annotations: {}
 flowApi:
   enabled: true
   extraEnv: []
   lowCost: true
   pods:
-    nodeSelector: { }
-    tolerations: [ ]
+    nodeSelector: {}
+    tolerations: []
     # -- flowApi pod affinity, the default is to schedule flowApi pods on different nodes than other flowApi pods for High Availability
     affinity:
       podAntiAffinity:
@@ -170,14 +163,14 @@ flowApi:
                       - flow-api
               topologyKey: topology.kubernetes.io/zone
     # -- annotations that will be applied to all flowApi pods, NOT the deployment
-    annotations: { }
+    annotations: {}
     # -- labels that will be applied to all flowApi pods, NOT the deployment
-    labels: { }
+    labels: {}
   deployment:
     # -- labels that will be applied to the flowApi deployment, NOT the pods
-    labels: { }
+    labels: {}
     # -- annotations that will be applied to the flowApi deployment, NOT the pods
-    annotations: { }
+    annotations: {}
   replicaCount: 4
   image:
     repository: ghcr.io/peerdb-io/flow-api
@@ -189,7 +182,7 @@ flowApi:
     targetPort: 8112
     httpPort: 8113
     targetHttpPort: 8113
-    annotations: { }
+    annotations: {}
   resources:
     requests:
       cpu: 0.1
@@ -199,7 +192,6 @@ flowApi:
       cpu: 0.5
       memory: 256Mi
       ephemeral-storage: 4Gi
-
 peerdbUI:
   enabled: true
   credentials:
@@ -208,8 +200,8 @@ peerdbUI:
   extraEnv: []
   lowCost: true
   pods:
-    nodeSelector: { }
-    tolerations: [ ]
+    nodeSelector: {}
+    tolerations: []
     # -- peerdbUI pod affinity, the default is to schedule peerdbUI pods on different nodes than other peerdbUI pods for High Availability
     affinity:
       podAntiAffinity:
@@ -224,14 +216,14 @@ peerdbUI:
                       - peerdb-ui
               topologyKey: topology.kubernetes.io/zone
     # -- annotations that will be applied to all peerdbUI pods, NOT the deployment
-    annotations: { }
+    annotations: {}
     # -- labels that will be applied to all peerdbUI pods, NOT the deployment
-    labels: { }
+    labels: {}
   deployment:
     # -- labels that will be applied to the peerdbUI deployment, NOT the pods
-    labels: { }
+    labels: {}
     # -- annotations that will be applied to the peerdbUI deployment, NOT the pods
-    annotations: { }
+    annotations: {}
   replicaCount: 4
   image:
     repository: ghcr.io/peerdb-io/peerdb-ui
@@ -242,8 +234,7 @@ peerdbUI:
     port: 3000
     targetPort: 3000
     url: _PEERDB_UI_SERVICE_URL_
-    annotations: { }
-
+    annotations: {}
   resources:
     requests:
       cpu: 0.1
@@ -255,10 +246,10 @@ peerdbUI:
       ephemeral-storage: 4Gi
   ingress:
     enabled: false
-    annotations: { }
+    annotations: {}
     className: ""
     # -- TLS configuration for ingress. Eg: `[ { hosts: [ "example.com" ], secretName: "example-tls" } ]`
-    tls: [ ]
+    tls: []
     # -- List of Hosts for the Ingress
     hosts:
       # -- Host of the ingress, non-empty
@@ -267,15 +258,13 @@ peerdbUI:
         paths:
           # -- Path within the host, non-empty
           - path: /
-
-
 peerdb:
   enabled: true
   extraEnv: []
   lowCost: true
   pods:
-    nodeSelector: { }
-    tolerations: [ ]
+    nodeSelector: {}
+    tolerations: []
     # -- peerdb pod affinity, the default is to schedule peerdb pods on different nodes than other peerdb pods for High Availability
     affinity:
       podAntiAffinity:
@@ -290,18 +279,18 @@ peerdb:
                       - peerdb-server
               topologyKey: topology.kubernetes.io/zone
     # -- annotations that will be applied to the peerdb-server pods, NOT the deployment
-    annotations: { }
+    annotations: {}
     # -- labels that will be applied to the peerdb-server pods, NOT the deployment
-    labels: { }
+    labels: {}
   deployment:
     # -- labels that will be applied to the peerdb-server deployment, NOT the pods
-    labels: { }
+    labels: {}
     # -- annotations that will be applied to the peerdb-server deployment, NOT the pods
-    annotations: { }
+    annotations: {}
   replicaCount: 4
   # -- This version is overridden by .env file if the install_peerdb.sh script is being used
   # In that case, either update the .env file or override it via values.customer.yaml when installing
-  version: stable-v0.22.1
+  version: stable-v0.30.4
   image:
     repository: ghcr.io/peerdb-io/peerdb-server
     pullPolicy: Always
@@ -311,7 +300,7 @@ peerdb:
     port: 9900
     targetPort: 9900
     type: ClusterIP
-    annotations: { }
+    annotations: {}
   env:
     logDir: "/var/log/peerdb"
   credentials:
@@ -325,7 +314,6 @@ peerdb:
       cpu: 0.5
       memory: 256Mi
       ephemeral-storage: 4Gi
-
 authentication:
   enabled: false
   replicaCount: 4
@@ -336,7 +324,7 @@ authentication:
     port: 80
     targetPort: 80
     type: LoadBalancer
-    annotations: { }
+    annotations: {}
   image:
     repository: nginx
     tag: latest
@@ -359,7 +347,6 @@ authentication:
       hostPattern: ""
     temporal:
       hostPattern: ""
-
 temporal-deploy:
   server:
     dynamicConfig:
@@ -373,7 +360,6 @@ temporal-deploy:
       persistence:
         default:
           driver: "sql"
-
           sql:
             driver: "postgres12"
             host: _HOST_
@@ -390,10 +376,8 @@ temporal-deploy:
               enabled: _TEMPORAL_SSL_MODE_
             #  enableHostVerification: true
             #  serverName: _HOST_ # this is strictly required when using serverless CRDB offerings
-
         visibility:
           driver: "sql"
-
           sql:
             driver: "postgres12"
             host: _HOST_
@@ -408,8 +392,8 @@ temporal-deploy:
             maxConnLifetime: "1h"
             tls:
               enabled: _TEMPORAL_SSL_MODE_
-            #  enableHostVerification: true
-            #  serverName: _HOST_ # this is strictly required when using serverless CRDB offerings
+              #  enableHostVerification: true
+              #  serverName: _HOST_ # this is strictly required when using serverless CRDB offerings
     resources:
       requests:
         cpu: 2
@@ -521,7 +505,6 @@ temporal-deploy:
                       values:
                         - worker
                 topologyKey: topology.kubernetes.io/zone
-
   web:
     replicaCount: 1
     image:
@@ -550,7 +533,6 @@ temporal-deploy:
                     values:
                       - web
               topologyKey: topology.kubernetes.io/zone
-
   admintools:
     resources:
       requests:
@@ -559,20 +541,16 @@ temporal-deploy:
       limits:
         cpu: 500m
         memory: 256Mi
-
   cassandra:
     enabled: false
-
   mysql:
     enabled: false
-
   elasticsearch:
     enabled: false
   grafana:
     enabled: false
   prometheus:
     enabled: false
-
   schema:
     setup:
       enabled: false
@@ -580,7 +558,6 @@ temporal-deploy:
       enabled: false
     createDatabase:
       enabled: false
-
 datadog:
   # -- Whether to deploy datadog, pulled from `DATADOG_ENABLED` from .env
   enabled: _DATADOG_ENABLED_
@@ -604,19 +581,17 @@ datadog:
     replicas: 2
     createPodDisruptionBudget: true
     enabled: true
-
 # -- Common values for all peerdb components that will be merged with the specific component values
 common:
   pods:
     # -- Node selector that will be applied to all the peerdb components additively
-    nodeSelector: { }
+    nodeSelector: {}
     # -- Tolerations that will be applied to all the peerdb components additively
-    tolerations: [ ]
+    tolerations: []
     # -- Affinity that will be applied to all the peerdb components additively
-    affinity: { }
+    affinity: {}
     # -- Image pull secrets that will be applied to all the peerdb components additively
     imagePullSecrets: []
-
 global:
   peerdb:
     enterprise:
@@ -624,8 +599,8 @@ global:
       saveCustomerValuesAsSecret: _SAVE_VALUES_AS_SECRET_
     lowCost:
       # -- Node selector that will be applied to all the lowCost=true peerdb components additively
-      nodeSelector: { }
+      nodeSelector: {}
       # -- Tolerations that will be applied to all the lowCost=true peerdb components additively
-      tolerations: [ ]
+      tolerations: []
       # -- Affinity that will be applied to all the lowCost=true peerdb components additively
-      affinity: { }
+      affinity: {}
