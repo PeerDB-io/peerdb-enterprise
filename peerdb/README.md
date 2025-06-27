@@ -1,6 +1,6 @@
 # peerdb
 
-![Version: 0.8.0](https://img.shields.io/badge/Version-0.8.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.22.1](https://img.shields.io/badge/AppVersion-v0.22.1-informational?style=flat-square)
+![Version: 0.8.1](https://img.shields.io/badge/Version-0.8.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.30.4](https://img.shields.io/badge/AppVersion-v0.30.4-informational?style=flat-square)
 
 Install PeerDB along with Temporal.
 
@@ -177,7 +177,7 @@ Install PeerDB along with Temporal.
 | peerdb.service.port | int | `9900` |  |
 | peerdb.service.targetPort | int | `9900` |  |
 | peerdb.service.type | string | `"ClusterIP"` |  |
-| peerdb.version | string | `"stable-v0.22.1"` | This version is overridden by .env file if the install_peerdb.sh script is being used In that case, either update the .env file or override it via values.customer.yaml when installing |
+| peerdb.version | string | `"stable-v0.30.4"` | This version is overridden by .env file if the install_peerdb.sh script is being used In that case, either update the .env file or override it via values.customer.yaml when installing |
 | peerdbUI.credentials.nexauth_secret | string | `""` |  |
 | peerdbUI.credentials.password | string | `"_PEERDB_PASSWORD_"` |  |
 | peerdbUI.deployment.annotations | object | `{}` | annotations that will be applied to the peerdbUI deployment, NOT the pods |
