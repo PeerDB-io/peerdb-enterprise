@@ -47,7 +47,7 @@ jobs:
           yq -e -i '.appVersion = strenv(PEERDB_VERSION)' peerdb/Chart.yaml
           yq -e -i '.appVersion = strenv(PEERDB_VERSION)' peerdb-catalog/Chart.yaml
           yq -e -i '.peerdb.version = strenv(STABLE_PEERDB_VERSION)' peerdb/values.yaml
-          git diff --exit-code || echo "{changes}={true}" >> $GITHUB_OUTPUT
+          git diff --exit-code || echo "changes=true" >> $GITHUB_OUTPUT
       - name: Get next version
         if: ${{ steps.update-peerdb-version.outputs.changes == 'true' }}
         uses: reecetech/version-increment@2024.10.1
