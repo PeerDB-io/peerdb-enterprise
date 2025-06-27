@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: validate version input
         run: |
-          if [[ ! "${{ github.event.inputs.version }}" =~ ^v.* || ! "${{ github.event.inputs.version }}" = "latest" ]]; then
+          if [[ ! "${{ github.event.inputs.version }}" =~ ^v.* && ! "${{ github.event.inputs.version }}" = "latest" ]]; then
           echo "Error: Version must start with 'v' or be 'latest'."
           exit 1
           fi
