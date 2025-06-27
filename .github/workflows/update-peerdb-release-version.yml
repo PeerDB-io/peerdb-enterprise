@@ -31,7 +31,7 @@ jobs:
           echo "PEERDB_VERSION=${LATEST_PEERDB_VERSION}" >> $GITHUB_ENV
       - name: Prefix with stable-
         run: |
-          echo "UPDATE_PEERDB_VERSION=stable-${{ env.PEERDB_VERSION }}" >> $GITHUB_ENV
+          echo "STABLE_PEERDB_VERSION=stable-${{ env.PEERDB_VERSION }}" >> $GITHUB_ENV
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
@@ -39,10 +39,10 @@ jobs:
       - name: Update PeerDB version
         run: |
           set -eo pipefail
-          sed -i -E 's:(^PEERDB_VERSION=).*?($):\1stable-${{ env.UPDATE_PEERDB_VERSION }}\2:g' .env.template
-          yq -e -i '.appVersion = strenv(UPDATE_PEERDB_VERSION)' peerdb/Chart.yaml
-          yq -e -i '.appVersion = strenv(UPDATE_PEERDB_VERSION)' peerdb-catalog/Chart.yaml
-          yq -e -i '.peerdb.version = strenv(UPDATE_PEERDB_VERSION)' peerdb/values.yaml
+          sed -i -E 's:(^PEERDB_VERSION=).*?($):\1${{ env.STABLE_PEERDB_VERSION }}\2:g' .env.template
+          yq -e -i '.appVersion = strenv(PEERDB_VERSION)' peerdb/Chart.yaml
+          yq -e -i '.appVersion = strenv(PEERDB_VERSION)' peerdb-catalog/Chart.yaml
+          yq -e -i '.peerdb.version = strenv(STABLE_PEERDB_VERSION)' peerdb/values.yaml
       - name: Get next version
         uses: reecetech/version-increment@2024.10.1
         id: version
