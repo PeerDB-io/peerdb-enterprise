@@ -28,7 +28,7 @@ jobs:
           fi
           echo "PEERDB_VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
       - name: Pull latest PeerDB release version
-        if: ${{ github.event.inputs.version == 'latest' }}
+        if: ${{ env.PEERDB_INPUT_VERSION == 'latest' }}
         run: |
           set -eo pipefail
           LATEST_PEERDB_VERSION=$(curl -sf https://api.github.com/repos/peerdb-io/peerdb/releases/latest | jq -r '.tag_name')
