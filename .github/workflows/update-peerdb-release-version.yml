@@ -8,7 +8,7 @@ on:
         default: 'latest'
   schedule:
     # Run every Monday at 14:30 UTC
-    - cron: '30 14 * * 1'
+    - cron: '00 15 * * 1'
 
 jobs:
   update-peerdb-release-version:
