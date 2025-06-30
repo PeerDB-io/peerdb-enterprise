@@ -3,7 +3,7 @@ entries:
   peerdb:
   - apiVersion: v2
     appVersion: v0.30.5
-    created: "2025-06-30T15:49:14.804722306Z"
+    created: "2025-06-30T15:49:36.547650227Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -33,7 +33,7 @@ entries:
     version: 0.8.2
   - apiVersion: v2
     appVersion: v0.30.4
-    created: "2025-06-30T15:49:14.778205516Z"
+    created: "2025-06-30T15:49:36.521526088Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -63,7 +63,7 @@ entries:
     version: 0.8.1
   - apiVersion: v2
     appVersion: v0.22.1
-    created: "2025-06-30T15:49:14.752491664Z"
+    created: "2025-06-30T15:49:36.493367817Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -93,7 +93,7 @@ entries:
     version: 0.8.0
   - apiVersion: v2
     appVersion: v0.12.2
-    created: "2025-06-30T15:49:14.725199817Z"
+    created: "2025-06-30T15:49:36.466769597Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -123,7 +123,7 @@ entries:
     version: 0.7.0
   - apiVersion: v2
     appVersion: v0.12.2
-    created: "2025-06-30T15:49:14.697797847Z"
+    created: "2025-06-30T15:49:36.439440162Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -153,8 +153,28 @@ entries:
     version: 0.6.0
   peerdb-catalog:
   - apiVersion: v2
+    appVersion: v0.30.5
+    created: "2025-06-30T15:49:36.585739354Z"
+    dependencies:
+    - condition: deploy.enabled
+      name: pgo
+      repository: oci://registry.developers.crunchydata.com/crunchydata
+      version: 5.5.0
+    description: A Helm chart for Kubernetes
+    digest: 8a3782bf8ff0043955bd619e19a28076bb878990d653caca64aeba0f77d1eecb
+    maintainers:
+    - name: PeerDB Inc.
+      url: https://peerdb.io/
+    - email: kunal@peerdb.io
+      name: Kunal Gupta
+    name: peerdb-catalog
+    type: application
+    urls:
+    - https://peerdb-io.github.io/peerdb-enterprise/peerdb-catalog-0.8.2.tgz
+    version: 0.8.2
+  - apiVersion: v2
     appVersion: v0.30.4
-    created: "2025-06-30T15:49:14.829937547Z"
+    created: "2025-06-30T15:49:36.574840362Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -174,7 +194,7 @@ entries:
     version: 0.8.1
   - apiVersion: v2
     appVersion: v0.22.1
-    created: "2025-06-30T15:49:14.823907667Z"
+    created: "2025-06-30T15:49:36.568067334Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -194,7 +214,7 @@ entries:
     version: 0.8.0
   - apiVersion: v2
     appVersion: v0.12.2
-    created: "2025-06-30T15:49:14.817528787Z"
+    created: "2025-06-30T15:49:36.561062916Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -214,7 +234,7 @@ entries:
     version: 0.7.0
   - apiVersion: v2
     appVersion: v0.12.2
-    created: "2025-06-30T15:49:14.811753051Z"
+    created: "2025-06-30T15:49:36.554774224Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -232,4 +252,4 @@ entries:
     urls:
     - https://peerdb-io.github.io/peerdb-enterprise/peerdb-catalog-0.6.0.tgz
     version: 0.6.0
-generated: "2025-06-30T15:49:14.668101505Z"
+generated: "2025-06-30T15:49:36.411619414Z"
