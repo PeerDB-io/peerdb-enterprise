@@ -21,3 +21,5 @@ jobs:
             --ref ${{ github.ref }} \
             -f chartName=${{ matrix.chartName }} \
             --json inputs='{"chartName": "${{ matrix.chartName }}"}'
+        env:
+          GH_TOKEN: ${{ github.token }}
