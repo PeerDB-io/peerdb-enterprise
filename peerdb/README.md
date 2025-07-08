@@ -106,6 +106,7 @@ Install PeerDB along with Temporal.
 | flowApi.service.targetHttpPort | int | `8113` |  |
 | flowApi.service.targetPort | int | `8112` |  |
 | flowApi.service.type | string | `"ClusterIP"` |  |
+| flowApi.version | string | `nil` | Image tag to use for flow-api. To use a release version prefix with `stable-` e.g. `stable-v0.30.6`. If not present, it will fall back to the `peerdb.version` value. |
 | flowSnapshotWorker.enabled | bool | `true` |  |
 | flowSnapshotWorker.extraEnv | list | `[]` |  |
 | flowSnapshotWorker.image.pullPolicy | string | `"Always"` |  |
@@ -127,6 +128,7 @@ Install PeerDB along with Temporal.
 | flowSnapshotWorker.service.enabled | bool | `true` |  |
 | flowSnapshotWorker.statefulSet.annotations | object | `{}` | annotations that will be applied to the flowSnapshotWorker statefulSet, NOT the pods |
 | flowSnapshotWorker.statefulSet.labels | object | `{}` | labels that will be applied to the flowSnapshotWorker statefulSet, NOT the pods |
+| flowSnapshotWorker.version | string | `nil` | Image tag to use for flow-snapshot-worker. To use a release version prefix with `stable-` e.g. `stable-v0.30.6`. If not present, it will fall back to the `peerdb.version` value. |
 | flowWorker.deployment.annotations | object | `{}` | annotations that will be applied to the flowWorker deployment, NOT the pods |
 | flowWorker.deployment.labels | object | `{}` | labels that will be applied to the flowWorker deployment, NOT the pods |
 | flowWorker.enabled | bool | `true` |  |
@@ -146,6 +148,7 @@ Install PeerDB along with Temporal.
 | flowWorker.resources.requests.cpu | int | `2` |  |
 | flowWorker.resources.requests.ephemeral-storage | string | `"64Gi"` |  |
 | flowWorker.resources.requests.memory | string | `"8Gi"` |  |
+| flowWorker.version | string | `nil` | Image tag to use for flow-worker. To use a release version prefix with `stable-` e.g. `stable-v0.30.6`. If not present, it will fall back to the `peerdb.version` value. |
 | global.peerdb.enterprise.saveCustomerValuesAsSecret | string | `"_SAVE_VALUES_AS_SECRET_"` | Whether to save customer values as a kubernetes secret for backup, pulled from `SAVE_VALUES_AS_SECRET` from .env |
 | global.peerdb.lowCost.affinity | object | `{}` | Affinity that will be applied to all the lowCost=true peerdb components additively |
 | global.peerdb.lowCost.nodeSelector | object | `{}` | Node selector that will be applied to all the lowCost=true peerdb components additively |
@@ -213,6 +216,7 @@ Install PeerDB along with Temporal.
 | peerdbUI.service.targetPort | int | `3000` |  |
 | peerdbUI.service.type | string | `"LoadBalancer"` |  |
 | peerdbUI.service.url | string | `"_PEERDB_UI_SERVICE_URL_"` |  |
+| peerdbUI.version | string | `nil` | Image tag to use for PeerDB UI. To use a release version prefix with `stable-` e.g. `stable-v0.30.6`. If not present, it will fall back to the `peerdb.version` value. |
 | pyroscope.enabled | bool | `false` |  |
 | serviceAccount.create | bool | `true` |  |
 | serviceAccount.name | string | `nil` |  |

@@ -109,6 +109,8 @@ flowWorker:
       cpu: 4
       memory: 8Gi
       ephemeral-storage: 128Gi
+  # -- Image tag to use for flow-worker. To use a release version prefix with `stable-` e.g. `stable-v0.30.6`. If not present, it will fall back to the `peerdb.version` value.
+  version: ~
 flowSnapshotWorker:
   enabled: true
   extraEnv: []
@@ -142,6 +144,8 @@ flowSnapshotWorker:
   service:
     enabled: true
     annotations: {}
+  # -- Image tag to use for flow-snapshot-worker. To use a release version prefix with `stable-` e.g. `stable-v0.30.6`. If not present, it will fall back to the `peerdb.version` value.
+  version: ~
 flowApi:
   enabled: true
   extraEnv: []
@@ -192,6 +196,8 @@ flowApi:
       cpu: 0.5
       memory: 256Mi
       ephemeral-storage: 4Gi
+  # -- Image tag to use for flow-api. To use a release version prefix with `stable-` e.g. `stable-v0.30.6`. If not present, it will fall back to the `peerdb.version` value.
+  version: ~
 peerdbUI:
   enabled: true
   credentials:
@@ -258,6 +264,8 @@ peerdbUI:
         paths:
           # -- Path within the host, non-empty
           - path: /
+  # -- Image tag to use for PeerDB UI. To use a release version prefix with `stable-` e.g. `stable-v0.30.6`. If not present, it will fall back to the `peerdb.version` value.
+  version: ~
 peerdb:
   enabled: true
   extraEnv: []
