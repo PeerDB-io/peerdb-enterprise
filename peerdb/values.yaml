@@ -32,6 +32,9 @@ azure:
 serviceAccount:
   create: true
   name:
+  # -- Extra annotations that will be applied to the service account, e.g. for AWS IAM roles, or GCP Workload Identity
+  extraAnnotations:
+    { }
 temporal:
   deploy:
     # -- Whether to deploy temporal, pulled from `TEMPORAL_DEPLOY_ENABLED` from .env
