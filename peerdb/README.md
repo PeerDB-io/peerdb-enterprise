@@ -1,6 +1,6 @@
 # peerdb
 
-![Version: 0.8.5](https://img.shields.io/badge/Version-0.8.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.30.9](https://img.shields.io/badge/AppVersion-v0.30.9-informational?style=flat-square)
+![Version: 0.9.0](https://img.shields.io/badge/Version-0.9.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.30.9](https://img.shields.io/badge/AppVersion-v0.30.9-informational?style=flat-square)
 
 Install PeerDB along with Temporal.
 
@@ -219,6 +219,7 @@ Install PeerDB along with Temporal.
 | peerdbUI.version | string | `nil` | Image tag to use for PeerDB UI. To use a release version prefix with `stable-` e.g. `stable-v0.30.6`. If not present, it will fall back to the `peerdb.version` value. |
 | pyroscope.enabled | bool | `false` |  |
 | serviceAccount.create | bool | `true` |  |
+| serviceAccount.extraAnnotations | object | `{}` | Extra annotations that will be applied to the service account, e.g. for AWS IAM roles, or GCP Workload Identity |
 | serviceAccount.name | string | `nil` |  |
 | temporal-deploy.admintools.resources.limits.cpu | string | `"500m"` |  |
 | temporal-deploy.admintools.resources.limits.memory | string | `"256Mi"` |  |
