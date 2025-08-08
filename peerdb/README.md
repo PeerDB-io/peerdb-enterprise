@@ -154,6 +154,7 @@ Install PeerDB along with Temporal.
 | global.peerdb.lowCost.nodeSelector | object | `{}` | Node selector that will be applied to all the lowCost=true peerdb components additively |
 | global.peerdb.lowCost.tolerations | list | `[]` | Tolerations that will be applied to all the lowCost=true peerdb components additively |
 | peerdb.credentials.password | string | `"peerdb"` |  |
+| peerdb.credentials.existingSecret | string | `""` | Specify an existing Secret for the peerdb password. Secret must contain SERVER_PEERDB_PASSWORD key. Takes precedence over peerdb.credentials.password |
 | peerdb.deployment.annotations | object | `{}` | annotations that will be applied to the peerdb-server deployment, NOT the pods |
 | peerdb.deployment.labels | object | `{}` | labels that will be applied to the peerdb-server deployment, NOT the pods |
 | peerdb.enabled | bool | `true` |  |
@@ -182,7 +183,9 @@ Install PeerDB along with Temporal.
 | peerdb.service.type | string | `"ClusterIP"` |  |
 | peerdb.version | string | `"stable-v0.30.9"` | This version is overridden by .env file if the install_peerdb.sh script is being used In that case, either update the .env file or override it via values.customer.yaml when installing |
 | peerdbUI.credentials.nexauth_secret | string | `""` |  |
+| peerdbUI.credentials.nexauth_ExistingSecret | string | `""` | Specify an existing Secret for the peerdbUI nexauth secret. Secret must contain UI_NEXTAUTH_SECRET key. Takes precedence over peerdbUI.credentials.nexauth_secret |
 | peerdbUI.credentials.password | string | `"_PEERDB_PASSWORD_"` |  |
+| peerdbUI.credentials.passwordExistingSecret | string | `""` | Specify an existing Secret for the peerdbUI password. Secret must contain UI_PEERDB_PASSWORD key. Takes precedence over peerdbUI.credentials.password |
 | peerdbUI.deployment.annotations | object | `{}` | annotations that will be applied to the peerdbUI deployment, NOT the pods |
 | peerdbUI.deployment.labels | object | `{}` | labels that will be applied to the peerdbUI deployment, NOT the pods |
 | peerdbUI.enabled | bool | `true` |  |
