@@ -577,7 +577,7 @@ temporal-deploy:
       enabled: false
 datadog:
   # -- Whether to deploy datadog, pulled from `DATADOG_ENABLED` from .env
-  enabled: false #_DATADOG_ENABLED_
+  enabled: _DATADOG_ENABLED_
   datadog:
     containerExclude: "kube_namespace:.*"
     containerInclude: "kube_namespace:_PEERDB_K8S_NAMESPACE_"
