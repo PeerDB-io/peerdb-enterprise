@@ -2,8 +2,38 @@ apiVersion: v1
 entries:
   peerdb:
   - apiVersion: v2
+    appVersion: v0.32.3
+    created: "2025-08-20T12:03:23.581366667Z"
+    dependencies:
+    - condition: pyroscope.enabled
+      name: pyroscope
+      repository: https://grafana.github.io/helm-charts
+      version: 1.0.3
+    - alias: temporal-deploy
+      condition: temporal.deploy.enabled
+      name: temporal
+      repository: https://go.temporal.io/helm-charts
+      version: 0.44.0
+    - alias: datadog
+      condition: datadog.enabled
+      name: datadog
+      repository: https://helm.datadoghq.com
+      version: 3.52.0
+    description: Install PeerDB along with Temporal.
+    digest: a3281335df60e5a18d6ea9c278356b5f202e5ed6c2265f5b7c19f0edade6e1e5
+    maintainers:
+    - name: PeerDB Inc.
+      url: https://peerdb.io/
+    - email: kunal@peerdb.io
+      name: Kunal Gupta
+    name: peerdb
+    type: application
+    urls:
+    - https://peerdb-io.github.io/peerdb-enterprise/peerdb-0.9.1.tgz
+    version: 0.9.1
+  - apiVersion: v2
     appVersion: v0.30.9
-    created: "2025-08-05T18:21:04.709925088Z"
+    created: "2025-08-20T12:03:23.553089113Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -33,7 +63,7 @@ entries:
     version: 0.9.0
   - apiVersion: v2
     appVersion: v0.30.9
-    created: "2025-08-05T18:21:04.681509089Z"
+    created: "2025-08-20T12:03:23.525074506Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -63,7 +93,7 @@ entries:
     version: 0.8.5
   - apiVersion: v2
     appVersion: v0.30.7
-    created: "2025-08-05T18:21:04.653466794Z"
+    created: "2025-08-20T12:03:23.496447825Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -93,7 +123,7 @@ entries:
     version: 0.8.4
   - apiVersion: v2
     appVersion: v0.30.6
-    created: "2025-08-05T18:21:04.626482997Z"
+    created: "2025-08-20T12:03:23.467526298Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -123,7 +153,7 @@ entries:
     version: 0.8.3
   - apiVersion: v2
     appVersion: v0.30.5
-    created: "2025-08-05T18:21:04.598561819Z"
+    created: "2025-08-20T12:03:23.440744463Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -153,7 +183,7 @@ entries:
     version: 0.8.2
   - apiVersion: v2
     appVersion: v0.30.4
-    created: "2025-08-05T18:21:04.57074532Z"
+    created: "2025-08-20T12:03:23.41188763Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -183,7 +213,7 @@ entries:
     version: 0.8.1
   - apiVersion: v2
     appVersion: v0.22.1
-    created: "2025-08-05T18:21:04.543962651Z"
+    created: "2025-08-20T12:03:23.384652795Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -213,7 +243,7 @@ entries:
     version: 0.8.0
   - apiVersion: v2
     appVersion: v0.12.2
-    created: "2025-08-05T18:21:04.516550068Z"
+    created: "2025-08-20T12:03:23.357033133Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -243,7 +273,7 @@ entries:
     version: 0.7.0
   - apiVersion: v2
     appVersion: v0.12.2
-    created: "2025-08-05T18:21:04.489168948Z"
+    created: "2025-08-20T12:03:23.328002321Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -274,7 +304,7 @@ entries:
   peerdb-catalog:
   - apiVersion: v2
     appVersion: v0.30.9
-    created: "2025-08-05T18:21:04.768803465Z"
+    created: "2025-08-20T12:03:23.639728101Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -294,7 +324,7 @@ entries:
     version: 0.9.0
   - apiVersion: v2
     appVersion: v0.30.9
-    created: "2025-08-05T18:21:04.763135236Z"
+    created: "2025-08-20T12:03:23.633476035Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -314,7 +344,7 @@ entries:
     version: 0.8.5
   - apiVersion: v2
     appVersion: v0.30.7
-    created: "2025-08-05T18:21:04.756467933Z"
+    created: "2025-08-20T12:03:23.627143822Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -334,7 +364,7 @@ entries:
     version: 0.8.4
   - apiVersion: v2
     appVersion: v0.30.6
-    created: "2025-08-05T18:21:04.749514808Z"
+    created: "2025-08-20T12:03:23.620674929Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -354,7 +384,7 @@ entries:
     version: 0.8.3
   - apiVersion: v2
     appVersion: v0.30.5
-    created: "2025-08-05T18:21:04.742689561Z"
+    created: "2025-08-20T12:03:23.614262623Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -374,7 +404,7 @@ entries:
     version: 0.8.2
   - apiVersion: v2
     appVersion: v0.30.4
-    created: "2025-08-05T18:21:04.736391855Z"
+    created: "2025-08-20T12:03:23.608041074Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -394,7 +424,7 @@ entries:
     version: 0.8.1
   - apiVersion: v2
     appVersion: v0.22.1
-    created: "2025-08-05T18:21:04.730001111Z"
+    created: "2025-08-20T12:03:23.601207261Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -414,7 +444,7 @@ entries:
     version: 0.8.0
   - apiVersion: v2
     appVersion: v0.12.2
-    created: "2025-08-05T18:21:04.723250685Z"
+    created: "2025-08-20T12:03:23.594242223Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -434,7 +464,7 @@ entries:
     version: 0.7.0
   - apiVersion: v2
     appVersion: v0.12.2
-    created: "2025-08-05T18:21:04.717345153Z"
+    created: "2025-08-20T12:03:23.588549312Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -452,4 +482,4 @@ entries:
     urls:
     - https://peerdb-io.github.io/peerdb-enterprise/peerdb-catalog-0.6.0.tgz
     version: 0.6.0
-generated: "2025-08-05T18:21:04.460890802Z"
+generated: "2025-08-20T12:03:23.299803442Z"
