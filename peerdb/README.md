@@ -1,6 +1,6 @@
 # peerdb
 
-![Version: 0.9.0](https://img.shields.io/badge/Version-0.9.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.30.9](https://img.shields.io/badge/AppVersion-v0.30.9-informational?style=flat-square)
+![Version: 0.9.1](https://img.shields.io/badge/Version-0.9.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.30.9](https://img.shields.io/badge/AppVersion-v0.30.9-informational?style=flat-square)
 
 Install PeerDB along with Temporal.
 
@@ -154,6 +154,7 @@ Install PeerDB along with Temporal.
 | global.peerdb.lowCost.nodeSelector | object | `{}` | Node selector that will be applied to all the lowCost=true peerdb components additively |
 | global.peerdb.lowCost.tolerations | list | `[]` | Tolerations that will be applied to all the lowCost=true peerdb components additively |
 | peerdb.credentials.password | string | `"peerdb"` |  |
+| peerdb.credentials.passwordExistingSecret | string | `""` | Use this existing secret for PeerDB Server Password. Must have `SERVER_PEERDB_PASSWORD` key. |
 | peerdb.deployment.annotations | object | `{}` | annotations that will be applied to the peerdb-server deployment, NOT the pods |
 | peerdb.deployment.labels | object | `{}` | labels that will be applied to the peerdb-server deployment, NOT the pods |
 | peerdb.enabled | bool | `true` |  |
@@ -181,8 +182,10 @@ Install PeerDB along with Temporal.
 | peerdb.service.targetPort | int | `9900` |  |
 | peerdb.service.type | string | `"ClusterIP"` |  |
 | peerdb.version | string | `"stable-v0.30.9"` | This version is overridden by .env file if the install_peerdb.sh script is being used In that case, either update the .env file or override it via values.customer.yaml when installing |
+| peerdbUI.credentials.nexauthExistingSecret | string | `""` | Use this existing secret for nexauth_secret. Must have `UI_NEXTAUTH_SECRET` key.  |
 | peerdbUI.credentials.nexauth_secret | string | `""` |  |
 | peerdbUI.credentials.password | string | `"_PEERDB_PASSWORD_"` |  |
+| peerdbUI.credentials.passwordExistingSecret | string | `""` | Use this existing secret for PeerDB UI Password. Must have `UI_PEERDB_PASSWORD` key.   |
 | peerdbUI.deployment.annotations | object | `{}` | annotations that will be applied to the peerdbUI deployment, NOT the pods |
 | peerdbUI.deployment.labels | object | `{}` | labels that will be applied to the peerdbUI deployment, NOT the pods |
 | peerdbUI.enabled | bool | `true` |  |
