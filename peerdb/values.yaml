@@ -205,11 +205,11 @@ peerdbUI:
   enabled: true
   credentials:
     password: _PEERDB_PASSWORD_
-    # If specified, password above is ignored. Must have UI_PEERDB_PASSWORD key.
-    # passwordExistingSecret: pw-existing-secret-name
+    # -- Use this existing secret for PeerDB UI Password. Must have `UI_PEERDB_PASSWORD` key.  
+    passwordExistingSecret: ''
     nexauth_secret: ''
-    # If specified, nexauth_secret is ignored. Must have UI_NEXTAUTH_SECRET key. 
-    # nexauth_ExistingSecret: na-existing-secret-name
+    # -- Use this existing secret for nexauth_secret. Must have `UI_NEXTAUTH_SECRET` key. 
+    nexauthExistingSecret: ''
   extraEnv: []
   lowCost: true
   pods:
@@ -320,8 +320,8 @@ peerdb:
     logDir: "/var/log/peerdb"
   credentials:
     password: "peerdb"
-    # If specified, password above is ignored. Must have SERVER_PEERDB_PASSWORD key.
-    # existingSecret: existing-secret-name
+    # -- Use this existing secret for PeerDB Server Password. Must have `SERVER_PEERDB_PASSWORD` key.
+    passwordExistingSecret: ''
   resources:
     requests:
       cpu: 0.1

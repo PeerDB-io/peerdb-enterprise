@@ -57,19 +57,19 @@ spec:
           valueFrom:
             secretKeyRef:
               key: UI_PEERDB_PASSWORD
-              {{- if and .Values.peerdbUI.credentials.password (not .Values.peerdbUI.credentials.passwordExistingSecret) }}
-              name: peerdb-server-ui-secret
-              {{- else if .Values.peerdbUI.credentials.passwordExistingSecret }}
+              {{- if .Values.peerdbUI.credentials.passwordExistingSecret }}
               name: {{ .Values.peerdbUI.credentials.passwordExistingSecret }}
+              {{- else }}
+              name: peerdb-server-ui-secret
               {{- end }}
         - name: NEXTAUTH_SECRET
           valueFrom:
             secretKeyRef:
               key: UI_NEXTAUTH_SECRET
-              {{- if not .Values.peerdbUI.credentials.nexauth_ExistingSecret }}
-              name: peerdb-server-ui-secret
+              {{- if .Values.peerdbUI.credentials.nexauthExistingSecret }}
+              name: {{ .Values.peerdbUI.credentials.nexauthExistingSecret }}
               {{- else }}
-              name: {{ .Values.peerdbUI.credentials.nexauth_ExistingSecret }}
+              name: peerdb-server-ui-secret
               {{- end }}
         - name: NEXTAUTH_URL
           value: {{ .Values.peerdbUI.service.url }}
