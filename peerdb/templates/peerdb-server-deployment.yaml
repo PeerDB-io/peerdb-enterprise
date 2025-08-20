@@ -56,10 +56,10 @@ spec:
           valueFrom:
             secretKeyRef:
               key: SERVER_PEERDB_PASSWORD
-              {{- if and .Values.peerdb.credentials.password (not .Values.peerdb.credentials.existingSecret) }}
+              {{- if .Values.peerdb.credentials.passwordExistingSecret }}
+              name: {{ .Values.peerdb.credentials.passwordExistingSecret }}
+              {{- else }}
               name: peerdb-server-ui-secret
-              {{- else if .Values.peerdb.credentials.existingSecret }}
-              name: {{ .Values.peerdb.credentials.existingSecret }}
               {{- end }}
         # flow server config
         - name: PEERDB_FLOW_SERVER_ADDRESS
