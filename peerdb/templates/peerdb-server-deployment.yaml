@@ -32,6 +32,9 @@ spec:
         {{ . | toYaml | nindent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{- end }}
       terminationGracePeriodSeconds: {{ default 60 .Values.peerdb.terminationGracePeriodSeconds }}
       {{- include "pods.affinity" (list $ "peerdb") | nindent 6 }}
       {{- include "pods.nodeSelector" (list $ "peerdb") | nindent 6 }}
