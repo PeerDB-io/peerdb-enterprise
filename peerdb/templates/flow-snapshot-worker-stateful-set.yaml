@@ -54,5 +54,8 @@ spec:
         {{- end }}
         {{- with .Values.flowSnapshotWorker.resources }}
         resources: {{ toYaml . | nindent 10 }}
+        {{- include "aws.config" . | nindent 8 }}
+        {{- include "catalog.pgConf" . | nindent 8 }}
+        {{- include "temporal.config" . | nindent 8 }}
         {{- end }}
 {{- end -}}
