@@ -96,7 +96,7 @@ schema:
       init:
         image:
           repository: golang
-          tag: alpine
+          tag: alpine@sha256:ac09a5f469f307e5da71e766b0bd59c9c49ea460a528cc3e6686513d64a6f1fb
       schemaCreate:
         repository: alpine
         tag: latest
@@ -110,7 +110,7 @@ schema:
   test:
     image:
       repository: postgres
-      tag: latest
+      tag: latest@sha256:bfe50b2b0ddd9b55eadedd066fe24c7c6fe06626185b73358c480ea37868024d
   resources:
     requests:
       cpu: 0.5
@@ -128,7 +128,7 @@ temporal:
     image:
       repository: temporalio/admin-tools
       # -- This should be set from the helm values for temporal dependency from the main chart
-      tag: 1.24.2.1-tctl-1.18.1-cli-0.13.2
+      tag: 1.24.2.1-tctl-1.18.1-cli-0.13.2@sha256:365697b58d963d9dacdfd7b6135c64d6981c3d4f064da1afe2edb030aa49af6f
       pullPolicy: IfNotPresent
 
 
