@@ -304,7 +304,7 @@ peerdb:
   replicaCount: 4
   # -- This version is overridden by .env file if the install_peerdb.sh script is being used
   # In that case, either update the .env file or override it via values.customer.yaml when installing
-  version: stable-v0.36.4
+  version: stable-v0.36.6
   image:
     repository: ghcr.io/peerdb-io/peerdb-server
     pullPolicy: Always
