@@ -17,7 +17,7 @@ dependencies:
     alias: temporal-deploy
     condition: temporal.deploy.enabled
   - name: datadog
-    version: 3.52.0
+    version: 3.170.1
     repository: https://helm.datadoghq.com
     alias: datadog
     condition: datadog.enabled
