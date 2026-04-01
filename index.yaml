@@ -3,7 +3,7 @@ entries:
   peerdb:
   - apiVersion: v2
     appVersion: v0.36.12
-    created: "2026-03-17T07:34:01.396559376Z"
+    created: "2026-04-01T03:00:18.261553213Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -33,7 +33,7 @@ entries:
     version: 0.9.12
   - apiVersion: v2
     appVersion: v0.36.7
-    created: "2026-03-17T07:34:01.368197009Z"
+    created: "2026-04-01T03:00:18.234154322Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -63,7 +63,7 @@ entries:
     version: 0.9.11
   - apiVersion: v2
     appVersion: v0.36.6
-    created: "2026-03-17T07:34:01.341906206Z"
+    created: "2026-04-01T03:00:18.206715621Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -93,7 +93,7 @@ entries:
     version: 0.9.10
   - apiVersion: v2
     appVersion: v0.36.4
-    created: "2026-03-17T07:34:01.588331033Z"
+    created: "2026-04-01T03:00:18.452803907Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -123,7 +123,7 @@ entries:
     version: 0.9.8
   - apiVersion: v2
     appVersion: v0.36.3
-    created: "2026-03-17T07:34:01.559778576Z"
+    created: "2026-04-01T03:00:18.425254052Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -153,7 +153,7 @@ entries:
     version: 0.9.7
   - apiVersion: v2
     appVersion: v0.36.2
-    created: "2026-03-17T07:34:01.533579821Z"
+    created: "2026-04-01T03:00:18.397698202Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -183,7 +183,7 @@ entries:
     version: 0.9.6
   - apiVersion: v2
     appVersion: v0.35.2
-    created: "2026-03-17T07:34:01.504932706Z"
+    created: "2026-04-01T03:00:18.370098637Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -213,7 +213,7 @@ entries:
     version: 0.9.5
   - apiVersion: v2
     appVersion: v0.34.8
-    created: "2026-03-17T07:34:01.47777984Z"
+    created: "2026-04-01T03:00:18.343058361Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -243,7 +243,7 @@ entries:
     version: 0.9.4
   - apiVersion: v2
     appVersion: v0.34.2
-    created: "2026-03-17T07:34:01.450205207Z"
+    created: "2026-04-01T03:00:18.315926095Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -273,7 +273,7 @@ entries:
     version: 0.9.3
   - apiVersion: v2
     appVersion: v0.34.2
-    created: "2026-03-17T07:34:01.423351811Z"
+    created: "2026-04-01T03:00:18.288870493Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -303,7 +303,7 @@ entries:
     version: 0.9.2
   - apiVersion: v2
     appVersion: v0.32.3
-    created: "2026-03-17T07:34:01.312015667Z"
+    created: "2026-04-01T03:00:18.179491344Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -333,7 +333,7 @@ entries:
     version: 0.9.1
   - apiVersion: v2
     appVersion: v0.30.9
-    created: "2026-03-17T07:34:01.284837072Z"
+    created: "2026-04-01T03:00:18.153476265Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -363,7 +363,7 @@ entries:
     version: 0.9.0
   - apiVersion: v2
     appVersion: v0.30.9
-    created: "2026-03-17T07:34:01.257198531Z"
+    created: "2026-04-01T03:00:18.122368055Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -393,7 +393,7 @@ entries:
     version: 0.8.5
   - apiVersion: v2
     appVersion: v0.30.7
-    created: "2026-03-17T07:34:01.222070382Z"
+    created: "2026-04-01T03:00:18.083943082Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -423,7 +423,7 @@ entries:
     version: 0.8.4
   - apiVersion: v2
     appVersion: v0.30.6
-    created: "2026-03-17T07:34:01.188183586Z"
+    created: "2026-04-01T03:00:18.040952464Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -453,7 +453,7 @@ entries:
     version: 0.8.3
   - apiVersion: v2
     appVersion: v0.30.5
-    created: "2026-03-17T07:34:01.161046715Z"
+    created: "2026-04-01T03:00:18.01489232Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -483,7 +483,7 @@ entries:
     version: 0.8.2
   - apiVersion: v2
     appVersion: v0.30.4
-    created: "2026-03-17T07:34:01.135412567Z"
+    created: "2026-04-01T03:00:17.98706117Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -513,7 +513,7 @@ entries:
     version: 0.8.1
   - apiVersion: v2
     appVersion: v0.22.1
-    created: "2026-03-17T07:34:01.107698166Z"
+    created: "2026-04-01T03:00:17.960643342Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -543,7 +543,7 @@ entries:
     version: 0.8.0
   - apiVersion: v2
     appVersion: v0.12.2
-    created: "2026-03-17T07:34:01.080733012Z"
+    created: "2026-04-01T03:00:17.933662045Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -573,7 +573,7 @@ entries:
     version: 0.7.0
   - apiVersion: v2
     appVersion: v0.12.2
-    created: "2026-03-17T07:34:01.053607133Z"
+    created: "2026-04-01T03:00:17.90642172Z"
     dependencies:
     - condition: pyroscope.enabled
       name: pyroscope
@@ -603,8 +603,28 @@ entries:
     version: 0.6.0
   peerdb-catalog:
   - apiVersion: v2
+    appVersion: v0.36.16
+    created: "2026-04-01T03:00:18.542601129Z"
+    dependencies:
+    - condition: deploy.enabled
+      name: pgo
+      repository: oci://registry.developers.crunchydata.com/crunchydata
+      version: 5.5.0
+    description: A Helm chart for Kubernetes
+    digest: d95a1665467dbc8793187a9fb64f6c885930dddefaabea49b5d70476a844f7c1
+    maintainers:
+    - name: PeerDB Inc.
+      url: https://peerdb.io/
+    - email: kunal@peerdb.io
+      name: Kunal Gupta
+    name: peerdb-catalog
+    type: application
+    urls:
+    - https://peerdb-io.github.io/peerdb-enterprise/peerdb-catalog-0.9.13-pre.a4fac59.tgz
+    version: 0.9.13-pre.a4fac59
+  - apiVersion: v2
     appVersion: v0.36.12
-    created: "2026-03-17T07:34:01.689443508Z"
+    created: "2026-04-01T03:00:18.536111472Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -624,7 +644,7 @@ entries:
     version: 0.9.12
   - apiVersion: v2
     appVersion: v0.36.7
-    created: "2026-03-17T07:34:01.683829302Z"
+    created: "2026-04-01T03:00:18.529581979Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -644,7 +664,7 @@ entries:
     version: 0.9.11
   - apiVersion: v2
     appVersion: v0.36.6
-    created: "2026-03-17T07:34:01.675468539Z"
+    created: "2026-04-01T03:00:18.523264959Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -664,7 +684,7 @@ entries:
     version: 0.9.10
   - apiVersion: v2
     appVersion: v0.36.4
-    created: "2026-03-17T07:34:01.733891273Z"
+    created: "2026-04-01T03:00:18.587647156Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -684,7 +704,7 @@ entries:
     version: 0.9.8
   - apiVersion: v2
     appVersion: v0.36.3
-    created: "2026-03-17T07:34:01.727612706Z"
+    created: "2026-04-01T03:00:18.581401761Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -704,7 +724,7 @@ entries:
     version: 0.9.7
   - apiVersion: v2
     appVersion: v0.36.2
-    created: "2026-03-17T07:34:01.721347764Z"
+    created: "2026-04-01T03:00:18.5749534Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -724,7 +744,7 @@ entries:
     version: 0.9.6
   - apiVersion: v2
     appVersion: v0.35.2
-    created: "2026-03-17T07:34:01.715103617Z"
+    created: "2026-04-01T03:00:18.568575861Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -744,7 +764,7 @@ entries:
     version: 0.9.5
   - apiVersion: v2
     appVersion: v0.34.8
-    created: "2026-03-17T07:34:01.708683258Z"
+    created: "2026-04-01T03:00:18.5620852Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -764,7 +784,7 @@ entries:
     version: 0.9.4
   - apiVersion: v2
     appVersion: v0.34.2
-    created: "2026-03-17T07:34:01.702412859Z"
+    created: "2026-04-01T03:00:18.555479264Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -784,7 +804,7 @@ entries:
     version: 0.9.3
   - apiVersion: v2
     appVersion: v0.34.2
-    created: "2026-03-17T07:34:01.69599023Z"
+    created: "2026-04-01T03:00:18.549080048Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -804,7 +824,7 @@ entries:
     version: 0.9.2
   - apiVersion: v2
     appVersion: v0.32.3
-    created: "2026-03-17T07:34:01.668215521Z"
+    created: "2026-04-01T03:00:18.516915392Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -824,7 +844,7 @@ entries:
     version: 0.9.1
   - apiVersion: v2
     appVersion: v0.30.9
-    created: "2026-03-17T07:34:01.662467285Z"
+    created: "2026-04-01T03:00:18.510484947Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -844,7 +864,7 @@ entries:
     version: 0.9.0
   - apiVersion: v2
     appVersion: v0.30.9
-    created: "2026-03-17T07:34:01.655478731Z"
+    created: "2026-04-01T03:00:18.504314185Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -864,7 +884,7 @@ entries:
     version: 0.8.5
   - apiVersion: v2
     appVersion: v0.30.7
-    created: "2026-03-17T07:34:01.648283952Z"
+    created: "2026-04-01T03:00:18.498129263Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -884,7 +904,7 @@ entries:
     version: 0.8.4
   - apiVersion: v2
     appVersion: v0.30.6
-    created: "2026-03-17T07:34:01.63932532Z"
+    created: "2026-04-01T03:00:18.491880927Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -904,7 +924,7 @@ entries:
     version: 0.8.3
   - apiVersion: v2
     appVersion: v0.30.5
-    created: "2026-03-17T07:34:01.630217207Z"
+    created: "2026-04-01T03:00:18.485609557Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -924,7 +944,7 @@ entries:
     version: 0.8.2
   - apiVersion: v2
     appVersion: v0.30.4
-    created: "2026-03-17T07:34:01.622961194Z"
+    created: "2026-04-01T03:00:18.479286189Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -944,7 +964,7 @@ entries:
     version: 0.8.1
   - apiVersion: v2
     appVersion: v0.22.1
-    created: "2026-03-17T07:34:01.614522622Z"
+    created: "2026-04-01T03:00:18.473887939Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -964,7 +984,7 @@ entries:
     version: 0.8.0
   - apiVersion: v2
     appVersion: v0.12.2
-    created: "2026-03-17T07:34:01.60453672Z"
+    created: "2026-04-01T03:00:18.466577206Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -984,7 +1004,7 @@ entries:
     version: 0.7.0
   - apiVersion: v2
     appVersion: v0.12.2
-    created: "2026-03-17T07:34:01.595233706Z"
+    created: "2026-04-01T03:00:18.460765043Z"
     dependencies:
     - condition: deploy.enabled
       name: pgo
@@ -1002,4 +1022,4 @@ entries:
     urls:
     - https://peerdb-io.github.io/peerdb-enterprise/peerdb-catalog-0.6.0.tgz
     version: 0.6.0
-generated: "2026-03-17T07:34:01.02660655Z"
+generated: "2026-04-01T03:00:17.879328275Z"
