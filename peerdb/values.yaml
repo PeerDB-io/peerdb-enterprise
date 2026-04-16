@@ -101,6 +101,11 @@ flowWorker:
     # -- annotations that will be applied to the flowWorker deployment, NOT the pods
     annotations: {}
   replicaCount: 2
+  # -- flowWorker PodDisruptionBudget. Set `pdb.enabled: true` to render. `minAvailable` takes precedence over `maxUnavailable` when both are set.
+  pdb:
+    enabled: false
+    minAvailable: 50%
+    # maxUnavailable: 1
   image:
     repository: ghcr.io/peerdb-io/flow-worker
     pullPolicy: Always
@@ -135,6 +140,14 @@ flowSnapshotWorker:
     # -- annotations that will be applied to the flowSnapshotWorker statefulSet, NOT the pods
     annotations: {}
   replicaCount: 1
+  # -- flowSnapshotWorker PodDisruptionBudget. Set `pdb.enabled: true` to render.
+  # Default is `maxUnavailable: 1` because the upstream default replicaCount is 1
+  # — `minAvailable: 50%` would round up to 1 and block node drains entirely on
+  # single-replica configs. Switch to `minAvailable: 50%` once replicaCount >= 2.
+  pdb:
+    enabled: false
+    maxUnavailable: 1
+    # minAvailable: 50%
   image:
     repository: ghcr.io/peerdb-io/flow-snapshot-worker
     pullPolicy: Always
@@ -184,6 +197,11 @@ flowApi:
     # -- annotations that will be applied to the flowApi deployment, NOT the pods
     annotations: {}
   replicaCount: 4
+  # -- flowApi PodDisruptionBudget. Set `pdb.enabled: true` to render. `minAvailable` takes precedence over `maxUnavailable` when both are set.
+  pdb:
+    enabled: false
+    minAvailable: 50%
+    # maxUnavailable: 1
   image:
     repository: ghcr.io/peerdb-io/flow-api
     pullPolicy: Always
@@ -245,6 +263,11 @@ peerdbUI:
     # -- annotations that will be applied to the peerdbUI deployment, NOT the pods
     annotations: {}
   replicaCount: 4
+  # -- peerdbUI PodDisruptionBudget. Set `pdb.enabled: true` to render. `minAvailable` takes precedence over `maxUnavailable` when both are set.
+  pdb:
+    enabled: false
+    minAvailable: 50%
+    # maxUnavailable: 1
   image:
     repository: ghcr.io/peerdb-io/peerdb-ui
     pullPolicy: Always
@@ -312,6 +335,11 @@ peerdb:
     # -- annotations that will be applied to the peerdb-server deployment, NOT the pods
     annotations: {}
   replicaCount: 4
+  # -- peerdb-server PodDisruptionBudget. Set `pdb.enabled: true` to render. `minAvailable` takes precedence over `maxUnavailable` when both are set.
+  pdb:
+    enabled: false
+    minAvailable: 50%
+    # maxUnavailable: 1
   # -- This version is overridden by .env file if the install_peerdb.sh script is being used
   # In that case, either update the .env file or override it via values.customer.yaml when installing
   version: stable-v0.36.17
