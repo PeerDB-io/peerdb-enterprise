@@ -106,6 +106,18 @@ flowWorker:
     enabled: false
     minAvailable: 50%
     # maxUnavailable: 1
+  # -- flowWorker Prometheus Operator PodMonitor. Requires the `monitoring.coreos.com/v1` CRDs.
+  podMonitor:
+    enabled: false
+    # -- Extra labels on the PodMonitor (commonly used to match a Prometheus Operator's PodMonitor selector).
+    labels: {}
+    # -- Namespace selector passed through to the PodMonitor spec.
+    namespaceSelector: {}
+    # -- Endpoints to scrape. See https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.PodMetricsEndpoint
+    podMetricsEndpoints: []
+    # - port: metrics
+    #   path: /metrics
+    #   interval: 30s
   image:
     repository: ghcr.io/peerdb-io/flow-worker
     pullPolicy: Always
@@ -148,6 +160,15 @@ flowSnapshotWorker:
     enabled: false
     maxUnavailable: 1
     # minAvailable: 50%
+  # -- flowSnapshotWorker Prometheus Operator PodMonitor. Requires the `monitoring.coreos.com/v1` CRDs.
+  podMonitor:
+    enabled: false
+    # -- Extra labels on the PodMonitor (commonly used to match a Prometheus Operator's PodMonitor selector).
+    labels: {}
+    # -- Namespace selector passed through to the PodMonitor spec.
+    namespaceSelector: {}
+    # -- Endpoints to scrape. See https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.PodMetricsEndpoint
+    podMetricsEndpoints: []
   image:
     repository: ghcr.io/peerdb-io/flow-snapshot-worker
     pullPolicy: Always
@@ -202,6 +223,15 @@ flowApi:
     enabled: false
     minAvailable: 50%
     # maxUnavailable: 1
+  # -- flowApi Prometheus Operator PodMonitor. Requires the `monitoring.coreos.com/v1` CRDs.
+  podMonitor:
+    enabled: false
+    # -- Extra labels on the PodMonitor (commonly used to match a Prometheus Operator's PodMonitor selector).
+    labels: {}
+    # -- Namespace selector passed through to the PodMonitor spec.
+    namespaceSelector: {}
+    # -- Endpoints to scrape. See https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.PodMetricsEndpoint
+    podMetricsEndpoints: []
   image:
     repository: ghcr.io/peerdb-io/flow-api
     pullPolicy: Always
@@ -268,6 +298,15 @@ peerdbUI:
     enabled: false
     minAvailable: 50%
     # maxUnavailable: 1
+  # -- peerdbUI Prometheus Operator PodMonitor. Requires the `monitoring.coreos.com/v1` CRDs.
+  podMonitor:
+    enabled: false
+    # -- Extra labels on the PodMonitor (commonly used to match a Prometheus Operator's PodMonitor selector).
+    labels: {}
+    # -- Namespace selector passed through to the PodMonitor spec.
+    namespaceSelector: {}
+    # -- Endpoints to scrape. See https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.PodMetricsEndpoint
+    podMetricsEndpoints: []
   image:
     repository: ghcr.io/peerdb-io/peerdb-ui
     pullPolicy: Always
@@ -340,6 +379,15 @@ peerdb:
     enabled: false
     minAvailable: 50%
     # maxUnavailable: 1
+  # -- peerdb-server Prometheus Operator PodMonitor. Requires the `monitoring.coreos.com/v1` CRDs.
+  podMonitor:
+    enabled: false
+    # -- Extra labels on the PodMonitor (commonly used to match a Prometheus Operator's PodMonitor selector).
+    labels: {}
+    # -- Namespace selector passed through to the PodMonitor spec.
+    namespaceSelector: {}
+    # -- Endpoints to scrape. See https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.PodMetricsEndpoint
+    podMetricsEndpoints: []
   # -- This version is overridden by .env file if the install_peerdb.sh script is being used
   # In that case, either update the .env file or override it via values.customer.yaml when installing
   version: stable-v0.36.17

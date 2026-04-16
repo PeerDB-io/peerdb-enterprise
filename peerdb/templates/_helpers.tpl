@@ -311,6 +311,44 @@ spec:
 {{- end }}
 {{- end -}}
 
+{{/*
+Render a Prometheus Operator PodMonitor for a peerdb component.
+Usage: {{ include "peerdb.podMonitor" (dict "root" . "service" "flowApi" "component" "flow-api") }}
+  root      — the top-level chart context (`$` or `.`)
+  service   — the values-key for the component (e.g. `flowApi`, `peerdb`, `flowSnapshotWorker`)
+  component — the component label / resource name (e.g. `flow-api`, `peerdb-server`)
+Gated on `<service>.enabled` AND `<service>.podMonitor.enabled`.
+Requires the `monitoring.coreos.com/v1` CRDs (Prometheus Operator).
+*/}}
+{{- define "peerdb.podMonitor" -}}
+{{- $root := .root -}}
+{{- $service := .service -}}
+{{- $component := .component -}}
+{{- $cfg := index $root.Values $service -}}
+{{- if and $cfg.enabled $cfg.podMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ $component }}
+  labels:
+    {{- include "component.labels" $component | nindent 4 }}
+    {{- include "peerdb.common.labels" $root | nindent 4 }}
+    {{- with $cfg.podMonitor.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "component.labels" $component | nindent 6 }}
+      {{- include "peerdb.common.selectorLabels" $root | nindent 6 }}
+  podMetricsEndpoints: {{- toYaml $cfg.podMonitor.podMetricsEndpoints | nindent 4 }}
+  {{- with $cfg.podMonitor.namespaceSelector }}
+  namespaceSelector: {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+
 {{- define "azure.config" -}}
 {{- if .Values.azure.clientId }}
 - name: AZURE_CLIENT_ID
