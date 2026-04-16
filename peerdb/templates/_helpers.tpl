@@ -311,6 +311,23 @@ spec:
 {{- end }}
 {{- end -}}
 
+{{- define "pods.topologySpreadConstraints" }}
+{{- $ := index . 0 }}
+{{- $service := index . 1 }}
+{{- $commonTopologySpread := $.Values.common.pods.topologySpreadConstraints | default list }}
+{{- $lowCostTopologySpread := list }}
+{{- if (index (index $.Values $service) "lowCost") }}
+    {{- $lowCostTopologySpread = $.Values.global.peerdb.lowCost.topologySpreadConstraints | default list }}
+{{- end }}
+{{- $specificTopologySpread := index (index (index $.Values $service) "pods") "topologySpreadConstraints" | default list }}
+{{- $combined := concat $commonTopologySpread $lowCostTopologySpread $specificTopologySpread }}
+{{- with $combined }}
+topologySpreadConstraints:
+  {{- $combined | toYaml | nindent 2 }}
+{{- end }}
+{{- end }}
+
+
 {{- define "azure.config" -}}
 {{- if .Values.azure.clientId }}
 - name: AZURE_CLIENT_ID
