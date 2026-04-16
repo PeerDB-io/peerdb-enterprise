@@ -1,6 +1,6 @@
 # peerdb
 
-![Version: 0.9.13-pre.a4fac59](https://img.shields.io/badge/Version-0.9.13--pre.a4fac59-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.36.16](https://img.shields.io/badge/AppVersion-v0.36.16-informational?style=flat-square)
+![Version: 0.9.14](https://img.shields.io/badge/Version-0.9.14-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.36.17](https://img.shields.io/badge/AppVersion-v0.36.17-informational?style=flat-square)
 
 Install PeerDB along with Temporal.
 
@@ -187,8 +187,8 @@ Install PeerDB along with Temporal.
 | peerdb.service.port | int | `9900` |  |
 | peerdb.service.targetPort | int | `9900` |  |
 | peerdb.service.type | string | `"ClusterIP"` |  |
-| peerdb.version | string | `"stable-v0.36.16"` | This version is overridden by .env file if the install_peerdb.sh script is being used In that case, either update the .env file or override it via values.customer.yaml when installing |
-| peerdbUI.credentials.nexauthExistingSecret | string | `""` | Use this existing secret for nexauth_secret. Must have `UI_NEXTAUTH_SECRET` key. |
+| peerdb.version | string | `"stable-v0.36.17"` | This version is overridden by .env file if the install_peerdb.sh script is being used In that case, either update the .env file or override it via values.customer.yaml when installing |
+| peerdbUI.credentials.nexauthExistingSecret | string | `""` | Use this existing secret for nexauth_secret. Must have `UI_NEXTAUTH_SECRET` key.  |
 | peerdbUI.credentials.nexauth_secret | string | `""` |  |
 | peerdbUI.credentials.password | string | `"_PEERDB_PASSWORD_"` |  |
 | peerdbUI.credentials.passwordExistingSecret | string | `""` | Use this existing secret for PeerDB UI Password. Must have `UI_PEERDB_PASSWORD` key. |
