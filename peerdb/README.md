@@ -188,7 +188,7 @@ Install PeerDB along with Temporal.
 | peerdb.service.targetPort | int | `9900` |  |
 | peerdb.service.type | string | `"ClusterIP"` |  |
 | peerdb.version | string | `"stable-v0.36.17"` | This version is overridden by .env file if the install_peerdb.sh script is being used In that case, either update the .env file or override it via values.customer.yaml when installing |
-| peerdbUI.credentials.nexauthExistingSecret | string | `""` | Use this existing secret for nexauth_secret. Must have `UI_NEXTAUTH_SECRET` key.  |
+| peerdbUI.credentials.nexauthExistingSecret | string | `""` | Use this existing secret for nexauth_secret. Must have `UI_NEXTAUTH_SECRET` key. |
 | peerdbUI.credentials.nexauth_secret | string | `""` |  |
 | peerdbUI.credentials.password | string | `"_PEERDB_PASSWORD_"` |  |
 | peerdbUI.credentials.passwordExistingSecret | string | `""` | Use this existing secret for PeerDB UI Password. Must have `UI_PEERDB_PASSWORD` key. |
