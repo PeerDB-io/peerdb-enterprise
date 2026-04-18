@@ -62,10 +62,11 @@ Install PeerDB along with Temporal.
 | catalog.pgPassword | string | `"_PG_PASSWORD_"` | catalog password - autofilled if using in-cluster catalog, else pulled from .env |
 | catalog.pgPort | string | `"_PG_PORT_"` | catalog port - autofilled if using in-cluster catalog, else pulled from .env |
 | catalog.pgUser | string | `"_PG_USER_"` | catalog user - autofilled if using in-cluster catalog, else pulled from .env |
-| common | object | `{"pods":{"affinity":{},"imagePullSecrets":[],"nodeSelector":{},"tolerations":[]}}` | Common values for all peerdb components that will be merged with the specific component values |
+| common | object | `{"pods":{"affinity":{},"imagePullSecrets":[],"nodeSelector":{},"priorityClassName":"","tolerations":[]}}` | Common values for all peerdb components that will be merged with the specific component values |
 | common.pods.affinity | object | `{}` | Affinity that will be applied to all the peerdb components additively |
 | common.pods.imagePullSecrets | list | `[]` | Image pull secrets that will be applied to all the peerdb components additively |
 | common.pods.nodeSelector | object | `{}` | Node selector that will be applied to all the peerdb components additively |
+| common.pods.priorityClassName | string | `""` | Priority class name to be applied to all peerdb components (can be overridden per component) |
 | common.pods.tolerations | list | `[]` | Tolerations that will be applied to all the peerdb components additively |
 | datadog.clusterAgent.createPodDisruptionBudget | bool | `true` |  |
 | datadog.clusterAgent.enabled | bool | `true` |  |
@@ -91,6 +92,7 @@ Install PeerDB along with Temporal.
 | flowApi.pods.annotations | object | `{}` | annotations that will be applied to all flowApi pods, NOT the deployment |
 | flowApi.pods.labels | object | `{}` | labels that will be applied to all flowApi pods, NOT the deployment |
 | flowApi.pods.nodeSelector | object | `{}` |  |
+| flowApi.pods.priorityClassName | string | `""` | Priority class name for flowApi pods |
 | flowApi.pods.tolerations | list | `[]` |  |
 | flowApi.replicaCount | int | `4` |  |
 | flowApi.resources.limits.cpu | float | `0.5` |  |
@@ -116,6 +118,7 @@ Install PeerDB along with Temporal.
 | flowSnapshotWorker.pods.annotations | object | `{}` | annotations that will be applied to all flowSnapshotWorker pods, NOT the statefulSet |
 | flowSnapshotWorker.pods.labels | object | `{}` | labels that will be applied to all flowSnapshotWorker pods, NOT the statefulSet |
 | flowSnapshotWorker.pods.nodeSelector | object | `{}` |  |
+| flowSnapshotWorker.pods.priorityClassName | string | `""` | Priority class name for flowSnapshotWorker pods |
 | flowSnapshotWorker.pods.tolerations | list | `[]` |  |
 | flowSnapshotWorker.replicaCount | int | `1` |  |
 | flowSnapshotWorker.resources.limits.cpu | int | `1` |  |
@@ -140,6 +143,7 @@ Install PeerDB along with Temporal.
 | flowWorker.pods.annotations | object | `{}` | annotations that will be applied to all flowWorker pods, NOT the deployment |
 | flowWorker.pods.labels | object | `{}` | labels that will be applied to all flowWorker pods, NOT the deployment |
 | flowWorker.pods.nodeSelector | object | `{}` |  |
+| flowWorker.pods.priorityClassName | string | `""` | Priority class name for flowWorker pods |
 | flowWorker.pods.tolerations | list | `[]` |  |
 | flowWorker.replicaCount | int | `2` |  |
 | flowWorker.resources.limits.cpu | int | `4` |  |
@@ -152,6 +156,7 @@ Install PeerDB along with Temporal.
 | global.peerdb.enterprise.saveCustomerValuesAsSecret | string | `"_SAVE_VALUES_AS_SECRET_"` | Whether to save customer values as a kubernetes secret for backup, pulled from `SAVE_VALUES_AS_SECRET` from .env |
 | global.peerdb.lowCost.affinity | object | `{}` | Affinity that will be applied to all the lowCost=true peerdb components additively |
 | global.peerdb.lowCost.nodeSelector | object | `{}` | Node selector that will be applied to all the lowCost=true peerdb components additively |
+| global.peerdb.lowCost.priorityClassName | string | `""` | Priority class name to be applied to all lowCost=true peerdb components (can be overridden per component) |
 | global.peerdb.lowCost.tolerations | list | `[]` | Tolerations that will be applied to all the lowCost=true peerdb components additively |
 | peerdb.credentials.password | string | `"peerdb"` |  |
 | peerdb.credentials.passwordExistingSecret | string | `""` | Use this existing secret for PeerDB Server Password. Must have `SERVER_PEERDB_PASSWORD` key. |
@@ -167,6 +172,7 @@ Install PeerDB along with Temporal.
 | peerdb.pods.annotations | object | `{}` | annotations that will be applied to the peerdb-server pods, NOT the deployment |
 | peerdb.pods.labels | object | `{}` | labels that will be applied to the peerdb-server pods, NOT the deployment |
 | peerdb.pods.nodeSelector | object | `{}` |  |
+| peerdb.pods.priorityClassName | string | `""` | Priority class name for peerdb-server pods |
 | peerdb.pods.tolerations | list | `[]` |  |
 | peerdb.replicaCount | int | `4` |  |
 | peerdb.resources.limits.cpu | float | `0.5` |  |
@@ -182,10 +188,10 @@ Install PeerDB along with Temporal.
 | peerdb.service.targetPort | int | `9900` |  |
 | peerdb.service.type | string | `"ClusterIP"` |  |
 | peerdb.version | string | `"stable-v0.36.17"` | This version is overridden by .env file if the install_peerdb.sh script is being used In that case, either update the .env file or override it via values.customer.yaml when installing |
-| peerdbUI.credentials.nexauthExistingSecret | string | `""` | Use this existing secret for nexauth_secret. Must have `UI_NEXTAUTH_SECRET` key.  |
+| peerdbUI.credentials.nexauthExistingSecret | string | `""` | Use this existing secret for nexauth_secret. Must have `UI_NEXTAUTH_SECRET` key. |
 | peerdbUI.credentials.nexauth_secret | string | `""` |  |
 | peerdbUI.credentials.password | string | `"_PEERDB_PASSWORD_"` |  |
-| peerdbUI.credentials.passwordExistingSecret | string | `""` | Use this existing secret for PeerDB UI Password. Must have `UI_PEERDB_PASSWORD` key.   |
+| peerdbUI.credentials.passwordExistingSecret | string | `""` | Use this existing secret for PeerDB UI Password. Must have `UI_PEERDB_PASSWORD` key. |
 | peerdbUI.deployment.annotations | object | `{}` | annotations that will be applied to the peerdbUI deployment, NOT the pods |
 | peerdbUI.deployment.labels | object | `{}` | labels that will be applied to the peerdbUI deployment, NOT the pods |
 | peerdbUI.enabled | bool | `true` |  |
@@ -205,6 +211,7 @@ Install PeerDB along with Temporal.
 | peerdbUI.pods.annotations | object | `{}` | annotations that will be applied to all peerdbUI pods, NOT the deployment |
 | peerdbUI.pods.labels | object | `{}` | labels that will be applied to all peerdbUI pods, NOT the deployment |
 | peerdbUI.pods.nodeSelector | object | `{}` |  |
+| peerdbUI.pods.priorityClassName | string | `""` | Priority class name for peerdbUI pods |
 | peerdbUI.pods.tolerations | list | `[]` |  |
 | peerdbUI.replicaCount | int | `4` |  |
 | peerdbUI.resources.limits.cpu | float | `0.5` |  |

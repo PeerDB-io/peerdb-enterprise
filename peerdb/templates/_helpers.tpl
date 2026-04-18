@@ -264,7 +264,18 @@ imagePullSecrets:
 {{- end }}
 {{- end }}
 
-
+{{- define "pods.priorityClassName" }}
+{{- $ := index . 0 }}
+{{- $service := index . 1 }}
+{{- $lowCostPriorityClassName := "" }}
+{{- if (index (index $.Values $service) "lowCost") }}
+    {{- $lowCostPriorityClassName = $.Values.global.peerdb.lowCost.priorityClassName }}
+{{- end }}
+{{- $result := coalesce (index (index (index $.Values $service) "pods") "priorityClassName") $lowCostPriorityClassName $.Values.common.pods.priorityClassName }}
+{{- with $result }}
+priorityClassName: {{ . }}
+{{- end }}
+{{- end }}
 
 {{- define "azure.config" -}}
 {{- if .Values.azure.clientId }}

@@ -40,6 +40,7 @@ spec:
       {{- include "pods.nodeSelector" (list $ "flowApi") | nindent 6 }}
       {{- include "pods.tolerations" (list $ "flowApi") | nindent 6 }}
       {{- include "pods.imagePullSecrets" (list $ "flowApi") | nindent 6 }}
+      {{- include "pods.priorityClassName" (list $ "flowApi") | nindent 6 }}
 
       containers:
       - name: flow-api

@@ -76,6 +76,8 @@ flowWorker:
   pods:
     nodeSelector: {}
     tolerations: []
+    # -- Priority class name for flowWorker pods
+    priorityClassName: ""
     # -- flowWorker pod affinity, the default is to schedule flowWorker pods on different nodes than other flowWorker pods for High Availability
     affinity:
       podAntiAffinity:
@@ -120,6 +122,8 @@ flowSnapshotWorker:
   pods:
     nodeSelector: {}
     tolerations: []
+    # -- Priority class name for flowSnapshotWorker pods
+    priorityClassName: ""
     affinity: {}
     # -- annotations that will be applied to all flowSnapshotWorker pods, NOT the statefulSet
     annotations: {}
@@ -155,6 +159,8 @@ flowApi:
   pods:
     nodeSelector: {}
     tolerations: []
+    # -- Priority class name for flowApi pods
+    priorityClassName: ""
     # -- flowApi pod affinity, the default is to schedule flowApi pods on different nodes than other flowApi pods for High Availability
     affinity:
       podAntiAffinity:
@@ -204,16 +210,18 @@ peerdbUI:
   enabled: true
   credentials:
     password: _PEERDB_PASSWORD_
-    # -- Use this existing secret for PeerDB UI Password. Must have `UI_PEERDB_PASSWORD` key.  
+    # -- Use this existing secret for PeerDB UI Password. Must have `UI_PEERDB_PASSWORD` key.
     passwordExistingSecret: ''
     nexauth_secret: ''
-    # -- Use this existing secret for nexauth_secret. Must have `UI_NEXTAUTH_SECRET` key. 
+    # -- Use this existing secret for nexauth_secret. Must have `UI_NEXTAUTH_SECRET` key.
     nexauthExistingSecret: ''
   extraEnv: []
   lowCost: true
   pods:
     nodeSelector: {}
     tolerations: []
+    # -- Priority class name for peerdbUI pods
+    priorityClassName: ""
     # -- peerdbUI pod affinity, the default is to schedule peerdbUI pods on different nodes than other peerdbUI pods for High Availability
     affinity:
       podAntiAffinity:
@@ -279,6 +287,8 @@ peerdb:
   pods:
     nodeSelector: {}
     tolerations: []
+    # -- Priority class name for peerdb-server pods
+    priorityClassName: ""
     # -- peerdb pod affinity, the default is to schedule peerdb pods on different nodes than other peerdb pods for High Availability
     affinity:
       podAntiAffinity:
@@ -608,6 +618,8 @@ common:
     affinity: {}
     # -- Image pull secrets that will be applied to all the peerdb components additively
     imagePullSecrets: []
+    # -- Priority class name to be applied to all peerdb components (can be overridden per component)
+    priorityClassName: ""
 global:
   peerdb:
     enterprise:
@@ -620,3 +632,5 @@ global:
       tolerations: []
       # -- Affinity that will be applied to all the lowCost=true peerdb components additively
       affinity: {}
+      # -- Priority class name to be applied to all lowCost=true peerdb components (can be overridden per component)
+      priorityClassName: ""
