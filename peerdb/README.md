@@ -88,6 +88,7 @@ Install PeerDB along with Temporal.
 | flowApi.image.pullPolicy | string | `"Always"` |  |
 | flowApi.image.repository | string | `"ghcr.io/peerdb-io/flow-api"` |  |
 | flowApi.lowCost | bool | `true` |  |
+| flowApi.pdb | object | `{"enabled":false,"minAvailable":"50%"}` | flowApi PodDisruptionBudget. Set `pdb.enabled: true` to render. `minAvailable` takes precedence over `maxUnavailable` when both are set. |
 | flowApi.pods.affinity | object | `{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["flow-api"]}]},"topologyKey":"topology.kubernetes.io/zone"},"weight":100}]}}` | flowApi pod affinity, the default is to schedule flowApi pods on different nodes than other flowApi pods for High Availability |
 | flowApi.pods.annotations | object | `{}` | annotations that will be applied to all flowApi pods, NOT the deployment |
 | flowApi.pods.labels | object | `{}` | labels that will be applied to all flowApi pods, NOT the deployment |
@@ -114,6 +115,7 @@ Install PeerDB along with Temporal.
 | flowSnapshotWorker.image.pullPolicy | string | `"Always"` |  |
 | flowSnapshotWorker.image.repository | string | `"ghcr.io/peerdb-io/flow-snapshot-worker"` |  |
 | flowSnapshotWorker.lowCost | bool | `true` |  |
+| flowSnapshotWorker.pdb | object | `{"enabled":false,"maxUnavailable":1}` | flowSnapshotWorker PodDisruptionBudget. Set `pdb.enabled: true` to render. Default is `maxUnavailable: 1` because the upstream default replicaCount is 1 — `minAvailable: 50%` would round up to 1 and block node drains entirely on single-replica configs. Switch to `minAvailable: 50%` once replicaCount >= 2. |
 | flowSnapshotWorker.pods.affinity | object | `{}` |  |
 | flowSnapshotWorker.pods.annotations | object | `{}` | annotations that will be applied to all flowSnapshotWorker pods, NOT the statefulSet |
 | flowSnapshotWorker.pods.labels | object | `{}` | labels that will be applied to all flowSnapshotWorker pods, NOT the statefulSet |
@@ -139,6 +141,7 @@ Install PeerDB along with Temporal.
 | flowWorker.image.pullPolicy | string | `"Always"` |  |
 | flowWorker.image.repository | string | `"ghcr.io/peerdb-io/flow-worker"` |  |
 | flowWorker.lowCost | bool | `false` |  |
+| flowWorker.pdb | object | `{"enabled":false,"minAvailable":"50%"}` | flowWorker PodDisruptionBudget. Set `pdb.enabled: true` to render. `minAvailable` takes precedence over `maxUnavailable` when both are set. |
 | flowWorker.pods.affinity | object | `{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["flow-worker"]}]},"topologyKey":"topology.kubernetes.io/zone"},"weight":100}]}}` | flowWorker pod affinity, the default is to schedule flowWorker pods on different nodes than other flowWorker pods for High Availability |
 | flowWorker.pods.annotations | object | `{}` | annotations that will be applied to all flowWorker pods, NOT the deployment |
 | flowWorker.pods.labels | object | `{}` | labels that will be applied to all flowWorker pods, NOT the deployment |
@@ -168,6 +171,7 @@ Install PeerDB along with Temporal.
 | peerdb.image.pullPolicy | string | `"Always"` |  |
 | peerdb.image.repository | string | `"ghcr.io/peerdb-io/peerdb-server"` |  |
 | peerdb.lowCost | bool | `true` |  |
+| peerdb.pdb | object | `{"enabled":false,"minAvailable":"50%"}` | peerdb-server PodDisruptionBudget. Set `pdb.enabled: true` to render. `minAvailable` takes precedence over `maxUnavailable` when both are set. |
 | peerdb.pods.affinity | object | `{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["peerdb-server"]}]},"topologyKey":"topology.kubernetes.io/zone"},"weight":100}]}}` | peerdb pod affinity, the default is to schedule peerdb pods on different nodes than other peerdb pods for High Availability |
 | peerdb.pods.annotations | object | `{}` | annotations that will be applied to the peerdb-server pods, NOT the deployment |
 | peerdb.pods.labels | object | `{}` | labels that will be applied to the peerdb-server pods, NOT the deployment |
@@ -207,6 +211,7 @@ Install PeerDB along with Temporal.
 | peerdbUI.ingress.hosts[0].paths[0] | object | `{"path":"/"}` | Path within the host, non-empty |
 | peerdbUI.ingress.tls | list | `[]` | TLS configuration for ingress. Eg: `[ { hosts: [ "example.com" ], secretName: "example-tls" } ]` |
 | peerdbUI.lowCost | bool | `true` |  |
+| peerdbUI.pdb | object | `{"enabled":false,"minAvailable":"50%"}` | peerdbUI PodDisruptionBudget. Set `pdb.enabled: true` to render. `minAvailable` takes precedence over `maxUnavailable` when both are set. |
 | peerdbUI.pods.affinity | object | `{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["peerdb-ui"]}]},"topologyKey":"topology.kubernetes.io/zone"},"weight":100}]}}` | peerdbUI pod affinity, the default is to schedule peerdbUI pods on different nodes than other peerdbUI pods for High Availability |
 | peerdbUI.pods.annotations | object | `{}` | annotations that will be applied to all peerdbUI pods, NOT the deployment |
 | peerdbUI.pods.labels | object | `{}` | labels that will be applied to all peerdbUI pods, NOT the deployment |

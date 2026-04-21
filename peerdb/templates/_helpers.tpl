@@ -277,6 +277,40 @@ priorityClassName: {{ . }}
 {{- end }}
 {{- end }}
 
+{{/*
+Render a PodDisruptionBudget for a peerdb component.
+Usage: {{ include "peerdb.pdb" (dict "root" . "service" "flowApi" "component" "flow-api") }}
+  root      — the top-level chart context (`$` or `.`)
+  service   — the values-key for the component (e.g. `flowApi`, `peerdb`, `flowSnapshotWorker`)
+  component — the component label / resource name (e.g. `flow-api`, `peerdb-server`)
+Gated on `<service>.enabled` AND `<service>.pdb.enabled`.
+*/}}
+{{- define "peerdb.pdb" -}}
+{{- $root := .root -}}
+{{- $service := .service -}}
+{{- $component := .component -}}
+{{- $cfg := index $root.Values $service -}}
+{{- if and $cfg.enabled $cfg.pdb.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ $component }}
+  labels:
+    {{- include "component.labels" $component | nindent 4 }}
+    {{- include "peerdb.common.labels" $root | nindent 4 }}
+spec:
+  {{- if $cfg.pdb.minAvailable }}
+  minAvailable: {{ $cfg.pdb.minAvailable }}
+  {{- else }}
+  maxUnavailable: {{ $cfg.pdb.maxUnavailable | default 1 }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "component.labels" $component | nindent 6 }}
+      {{- include "peerdb.common.selectorLabels" $root | nindent 6 }}
+{{- end }}
+{{- end -}}
+
 {{- define "azure.config" -}}
 {{- if .Values.azure.clientId }}
 - name: AZURE_CLIENT_ID
