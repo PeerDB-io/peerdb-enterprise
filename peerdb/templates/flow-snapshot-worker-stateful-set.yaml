@@ -40,6 +40,7 @@ spec:
       {{- include "pods.affinity" (list $ "flowSnapshotWorker") | nindent 6 }}
       {{- include "pods.nodeSelector" (list $ "flowSnapshotWorker") | nindent 6 }}
       {{- include "pods.tolerations" (list $ "flowSnapshotWorker") | nindent 6 }}
+      {{- include "pods.topologySpreadConstraints" (list $ "flowSnapshotWorker") | nindent 6 }}
       {{- include "pods.imagePullSecrets" (list $ "flowSnapshotWorker") | nindent 6 }}
       {{- include "pods.priorityClassName" (list $ "flowSnapshotWorker") | nindent 6 }}
 

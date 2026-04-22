@@ -39,6 +39,7 @@ spec:
       {{- include "pods.affinity" (list $ "flowWorker") | nindent 6 }}
       {{- include "pods.nodeSelector" (list $ "flowWorker") | nindent 6 }}
       {{- include "pods.tolerations" (list $ "flowWorker") | nindent 6 }}
+      {{- include "pods.topologySpreadConstraints" (list $ "flowWorker") | nindent 6 }}
       {{- include "pods.imagePullSecrets" (list $ "flowWorker") | nindent 6 }}
       {{- include "pods.priorityClassName" (list $ "flowWorker") | nindent 6 }}
       containers:

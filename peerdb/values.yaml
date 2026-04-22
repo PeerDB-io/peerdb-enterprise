@@ -91,6 +91,8 @@ flowWorker:
                     values:
                       - flow-worker
               topologyKey: topology.kubernetes.io/zone
+    # -- flowWorker topology spread constraints. See https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/
+    topologySpreadConstraints: []
     # -- annotations that will be applied to all flowWorker pods, NOT the deployment
     annotations: {}
     # -- labels that will be applied to all flowWorker pods, NOT the deployment
@@ -130,6 +132,8 @@ flowSnapshotWorker:
     # -- Priority class name for flowSnapshotWorker pods
     priorityClassName: ""
     affinity: {}
+    # -- flowSnapshotWorker topology spread constraints. See https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/
+    topologySpreadConstraints: []
     # -- annotations that will be applied to all flowSnapshotWorker pods, NOT the statefulSet
     annotations: {}
     # -- labels that will be applied to all flowSnapshotWorker pods, NOT the statefulSet
@@ -187,6 +191,8 @@ flowApi:
                     values:
                       - flow-api
               topologyKey: topology.kubernetes.io/zone
+    # -- flowApi topology spread constraints. See https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/
+    topologySpreadConstraints: []
     # -- annotations that will be applied to all flowApi pods, NOT the deployment
     annotations: {}
     # -- labels that will be applied to all flowApi pods, NOT the deployment
@@ -253,6 +259,8 @@ peerdbUI:
                     values:
                       - peerdb-ui
               topologyKey: topology.kubernetes.io/zone
+    # -- peerdbUI topology spread constraints. See https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/
+    topologySpreadConstraints: []
     # -- annotations that will be applied to all peerdbUI pods, NOT the deployment
     annotations: {}
     # -- labels that will be applied to all peerdbUI pods, NOT the deployment
@@ -325,6 +333,8 @@ peerdb:
                     values:
                       - peerdb-server
               topologyKey: topology.kubernetes.io/zone
+    # -- peerdb-server topology spread constraints. See https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/
+    topologySpreadConstraints: []
     # -- annotations that will be applied to the peerdb-server pods, NOT the deployment
     annotations: {}
     # -- labels that will be applied to the peerdb-server pods, NOT the deployment
@@ -644,6 +654,8 @@ common:
     tolerations: []
     # -- Affinity that will be applied to all the peerdb components additively
     affinity: {}
+    # -- Topology spread constraints that will be applied to all the peerdb components additively
+    topologySpreadConstraints: []
     # -- Image pull secrets that will be applied to all the peerdb components additively
     imagePullSecrets: []
     # -- Priority class name to be applied to all peerdb components (can be overridden per component)
@@ -662,3 +674,5 @@ global:
       affinity: {}
       # -- Priority class name to be applied to all lowCost=true peerdb components (can be overridden per component)
       priorityClassName: ""
+      # -- Topology spread constraints that will be applied to all the lowCost=true peerdb components additively
+      topologySpreadConstraints: []
