@@ -66,6 +66,17 @@ temporal:
   releaseName: _PEERDB_TEMPORAL_RELEASE_NAME_
   clientCert: _PEERDB_TEMPORAL_CLIENT_CERT_
   clientKey: _PEERDB_TEMPORAL_CLIENT_KEY_
+  # -- Override SNI / hostname verification used by the Temporal gRPC
+  # client's TLS handshake. When empty, Go's TLS stack falls back to the
+  # hostname portion of `temporal.host`. Set this when `temporal.host`
+  # differs from the hostname the server's certificate is issued for —
+  # e.g. reaching Temporal Cloud via an AWS PrivateLink VPC endpoint
+  # (`vpce-*.vpce.amazonaws.com`), whose hostname does not match the
+  # namespace wildcard cert (`*.<account>.tmprl.cloud`). Emitted as
+  # TEMPORAL_TLS_SERVER_NAME to flow-api / flow-worker /
+  # flow-snapshot-worker. Requires peerdb >= the version introducing
+  # TEMPORAL_TLS_SERVER_NAME support (PeerDB-io/peerdb#4215).
+  tlsServerName: ""
   taskQueueId: _PEERDB_DEPLOYMENT_UID_
 pyroscope:
   enabled: false
