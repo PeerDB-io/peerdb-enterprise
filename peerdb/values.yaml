@@ -66,6 +66,29 @@ temporal:
   releaseName: _PEERDB_TEMPORAL_RELEASE_NAME_
   clientCert: _PEERDB_TEMPORAL_CLIENT_CERT_
   clientKey: _PEERDB_TEMPORAL_CLIENT_KEY_
+  # -- Use an existing secret for Temporal client TLS cert/key. When set
+  # (and `temporal.deploy.enabled` is false), TEMPORAL_CLIENT_CERT and
+  # TEMPORAL_CLIENT_KEY are sourced via `secretKeyRef` from this secret
+  # (keys `tls.crt` and `tls.key`) instead of inline `clientCert` /
+  # `clientKey`. Preferred when you don't want PEM material to land in
+  # rendered manifests or the customer-values Secret.
+  #
+  # NOTE: flow-api/worker expects these env vars as base64-encoded PEM
+  # strings (see `flow/internal/env.go`). Populate the secret's `tls.crt`
+  # and `tls.key` with the *base64-encoded* cert/key contents (not raw
+  # PEM); this intentionally differs from the `kubernetes.io/tls`
+  # convention, which stores raw PEM.
+  existingSecret: ""
+  # -- Override SNI / hostname verification used by the Temporal gRPC
+  # client's TLS handshake. When empty, Go's TLS stack falls back to the
+  # hostname portion of `temporal.host`. Set this when `temporal.host`
+  # differs from the hostname the server's certificate is issued for —
+  # e.g. reaching Temporal Cloud via an AWS PrivateLink VPC endpoint
+  # (`vpce-*.vpce.amazonaws.com`), whose hostname does not match the
+  # namespace wildcard cert (`*.<account>.tmprl.cloud`). Emitted as
+  # TEMPORAL_TLS_SERVER_NAME to flow-api / flow-worker /
+  # flow-snapshot-worker.
+  tlsServerName: ""
   taskQueueId: _PEERDB_DEPLOYMENT_UID_
 pyroscope:
   enabled: false
