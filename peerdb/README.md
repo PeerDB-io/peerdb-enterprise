@@ -89,6 +89,10 @@ Install PeerDB along with Temporal.
 | flowApi.image.repository | string | `"ghcr.io/peerdb-io/flow-api"` |  |
 | flowApi.lowCost | bool | `true` |  |
 | flowApi.pdb | object | `{"enabled":false,"minAvailable":"50%"}` | flowApi PodDisruptionBudget. Set `pdb.enabled: true` to render. `minAvailable` takes precedence over `maxUnavailable` when both are set. |
+| flowApi.podMonitor | object | `{"enabled":false,"labels":{},"namespaceSelector":{},"podMetricsEndpoints":[]}` | flowApi Prometheus Operator PodMonitor. Requires the `monitoring.coreos.com/v1` CRDs. |
+| flowApi.podMonitor.labels | object | `{}` | Extra labels on the PodMonitor (commonly used to match a Prometheus Operator's PodMonitor selector). |
+| flowApi.podMonitor.namespaceSelector | object | `{}` | Namespace selector passed through to the PodMonitor spec. |
+| flowApi.podMonitor.podMetricsEndpoints | list | `[]` | Endpoints to scrape. See https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.PodMetricsEndpoint |
 | flowApi.pods.affinity | object | `{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["flow-api"]}]},"topologyKey":"topology.kubernetes.io/zone"},"weight":100}]}}` | flowApi pod affinity, the default is to schedule flowApi pods on different nodes than other flowApi pods for High Availability |
 | flowApi.pods.annotations | object | `{}` | annotations that will be applied to all flowApi pods, NOT the deployment |
 | flowApi.pods.labels | object | `{}` | labels that will be applied to all flowApi pods, NOT the deployment |
@@ -116,6 +120,10 @@ Install PeerDB along with Temporal.
 | flowSnapshotWorker.image.repository | string | `"ghcr.io/peerdb-io/flow-snapshot-worker"` |  |
 | flowSnapshotWorker.lowCost | bool | `true` |  |
 | flowSnapshotWorker.pdb | object | `{"enabled":false,"maxUnavailable":1}` | flowSnapshotWorker PodDisruptionBudget. Set `pdb.enabled: true` to render. Default is `maxUnavailable: 1` because the upstream default replicaCount is 1 — `minAvailable: 50%` would round up to 1 and block node drains entirely on single-replica configs. Switch to `minAvailable: 50%` once replicaCount >= 2. |
+| flowSnapshotWorker.podMonitor | object | `{"enabled":false,"labels":{},"namespaceSelector":{},"podMetricsEndpoints":[]}` | flowSnapshotWorker Prometheus Operator PodMonitor. Requires the `monitoring.coreos.com/v1` CRDs. |
+| flowSnapshotWorker.podMonitor.labels | object | `{}` | Extra labels on the PodMonitor (commonly used to match a Prometheus Operator's PodMonitor selector). |
+| flowSnapshotWorker.podMonitor.namespaceSelector | object | `{}` | Namespace selector passed through to the PodMonitor spec. |
+| flowSnapshotWorker.podMonitor.podMetricsEndpoints | list | `[]` | Endpoints to scrape. See https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.PodMetricsEndpoint |
 | flowSnapshotWorker.pods.affinity | object | `{}` |  |
 | flowSnapshotWorker.pods.annotations | object | `{}` | annotations that will be applied to all flowSnapshotWorker pods, NOT the statefulSet |
 | flowSnapshotWorker.pods.labels | object | `{}` | labels that will be applied to all flowSnapshotWorker pods, NOT the statefulSet |
@@ -142,6 +150,10 @@ Install PeerDB along with Temporal.
 | flowWorker.image.repository | string | `"ghcr.io/peerdb-io/flow-worker"` |  |
 | flowWorker.lowCost | bool | `false` |  |
 | flowWorker.pdb | object | `{"enabled":false,"minAvailable":"50%"}` | flowWorker PodDisruptionBudget. Set `pdb.enabled: true` to render. `minAvailable` takes precedence over `maxUnavailable` when both are set. |
+| flowWorker.podMonitor | object | `{"enabled":false,"labels":{},"namespaceSelector":{},"podMetricsEndpoints":[]}` | flowWorker Prometheus Operator PodMonitor. Requires the `monitoring.coreos.com/v1` CRDs. |
+| flowWorker.podMonitor.labels | object | `{}` | Extra labels on the PodMonitor (commonly used to match a Prometheus Operator's PodMonitor selector). |
+| flowWorker.podMonitor.namespaceSelector | object | `{}` | Namespace selector passed through to the PodMonitor spec. |
+| flowWorker.podMonitor.podMetricsEndpoints | list | `[]` | Endpoints to scrape. See https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.PodMetricsEndpoint |
 | flowWorker.pods.affinity | object | `{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["flow-worker"]}]},"topologyKey":"topology.kubernetes.io/zone"},"weight":100}]}}` | flowWorker pod affinity, the default is to schedule flowWorker pods on different nodes than other flowWorker pods for High Availability |
 | flowWorker.pods.annotations | object | `{}` | annotations that will be applied to all flowWorker pods, NOT the deployment |
 | flowWorker.pods.labels | object | `{}` | labels that will be applied to all flowWorker pods, NOT the deployment |
@@ -172,6 +184,10 @@ Install PeerDB along with Temporal.
 | peerdb.image.repository | string | `"ghcr.io/peerdb-io/peerdb-server"` |  |
 | peerdb.lowCost | bool | `true` |  |
 | peerdb.pdb | object | `{"enabled":false,"minAvailable":"50%"}` | peerdb-server PodDisruptionBudget. Set `pdb.enabled: true` to render. `minAvailable` takes precedence over `maxUnavailable` when both are set. |
+| peerdb.podMonitor | object | `{"enabled":false,"labels":{},"namespaceSelector":{},"podMetricsEndpoints":[]}` | peerdb-server Prometheus Operator PodMonitor. Requires the `monitoring.coreos.com/v1` CRDs. |
+| peerdb.podMonitor.labels | object | `{}` | Extra labels on the PodMonitor (commonly used to match a Prometheus Operator's PodMonitor selector). |
+| peerdb.podMonitor.namespaceSelector | object | `{}` | Namespace selector passed through to the PodMonitor spec. |
+| peerdb.podMonitor.podMetricsEndpoints | list | `[]` | Endpoints to scrape. See https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.PodMetricsEndpoint |
 | peerdb.pods.affinity | object | `{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["peerdb-server"]}]},"topologyKey":"topology.kubernetes.io/zone"},"weight":100}]}}` | peerdb pod affinity, the default is to schedule peerdb pods on different nodes than other peerdb pods for High Availability |
 | peerdb.pods.annotations | object | `{}` | annotations that will be applied to the peerdb-server pods, NOT the deployment |
 | peerdb.pods.labels | object | `{}` | labels that will be applied to the peerdb-server pods, NOT the deployment |
@@ -212,6 +228,10 @@ Install PeerDB along with Temporal.
 | peerdbUI.ingress.tls | list | `[]` | TLS configuration for ingress. Eg: `[ { hosts: [ "example.com" ], secretName: "example-tls" } ]` |
 | peerdbUI.lowCost | bool | `true` |  |
 | peerdbUI.pdb | object | `{"enabled":false,"minAvailable":"50%"}` | peerdbUI PodDisruptionBudget. Set `pdb.enabled: true` to render. `minAvailable` takes precedence over `maxUnavailable` when both are set. |
+| peerdbUI.podMonitor | object | `{"enabled":false,"labels":{},"namespaceSelector":{},"podMetricsEndpoints":[]}` | peerdbUI Prometheus Operator PodMonitor. Requires the `monitoring.coreos.com/v1` CRDs. |
+| peerdbUI.podMonitor.labels | object | `{}` | Extra labels on the PodMonitor (commonly used to match a Prometheus Operator's PodMonitor selector). |
+| peerdbUI.podMonitor.namespaceSelector | object | `{}` | Namespace selector passed through to the PodMonitor spec. |
+| peerdbUI.podMonitor.podMetricsEndpoints | list | `[]` | Endpoints to scrape. See https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.PodMetricsEndpoint |
 | peerdbUI.pods.affinity | object | `{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["peerdb-ui"]}]},"topologyKey":"topology.kubernetes.io/zone"},"weight":100}]}}` | peerdbUI pod affinity, the default is to schedule peerdbUI pods on different nodes than other peerdbUI pods for High Availability |
 | peerdbUI.pods.annotations | object | `{}` | annotations that will be applied to all peerdbUI pods, NOT the deployment |
 | peerdbUI.pods.labels | object | `{}` | labels that will be applied to all peerdbUI pods, NOT the deployment |
