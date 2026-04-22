@@ -63,8 +63,19 @@
   value: {{ .Values.temporal.host }}:{{ .Values.temporal.port }}
 - name: PEERDB_TEMPORAL_NAMESPACE
   value: {{ .Values.temporal.namespace }}
-
 {{- if not .Values.temporal.deploy.enabled }}
+{{- if .Values.temporal.existingSecret }}
+- name: TEMPORAL_CLIENT_CERT
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.temporal.existingSecret }}
+      key: tls.crt
+- name: TEMPORAL_CLIENT_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.temporal.existingSecret }}
+      key: tls.key
+{{- else }}
 {{- with .Values.temporal.tlsServerName }}
 - name: TEMPORAL_TLS_SERVER_NAME
   value: {{ . | quote }}
@@ -73,6 +84,7 @@
   value: {{ .Values.temporal.clientCert }}
 - name: TEMPORAL_CLIENT_KEY
   value: {{ .Values.temporal.clientKey }}
+{{- end }}
 {{- end }}
 - name: PEERDB_DEPLOYMENT_UID
   value: {{ .Values.temporal.taskQueueId }}
