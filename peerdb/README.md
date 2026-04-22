@@ -322,6 +322,7 @@ Install PeerDB along with Temporal.
 | temporal.deploy.registerNamespace.resources.requests.cpu | float | `0.1` |  |
 | temporal.deploy.registerNamespace.resources.requests.ephemeral-storage | string | `"4Gi"` |  |
 | temporal.deploy.registerNamespace.resources.requests.memory | string | `"128Mi"` |  |
+| temporal.existingSecret | string | `""` | Use an existing secret for Temporal TLS credentials. When set, clientCert/clientKey are ignored. |
 | temporal.host | string | `"peerdb-temporal-frontend"` |  |
 | temporal.k8s_namespace | string | `"_PEERDB_TEMPORAL_K8S_NAMESPACE_"` |  |
 | temporal.namespace | string | `"default"` |  |
