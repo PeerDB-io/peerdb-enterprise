@@ -66,6 +66,8 @@ temporal:
   releaseName: _PEERDB_TEMPORAL_RELEASE_NAME_
   clientCert: _PEERDB_TEMPORAL_CLIENT_CERT_
   clientKey: _PEERDB_TEMPORAL_CLIENT_KEY_
+  # -- Use an existing secret for Temporal TLS credentials. When set, clientCert/clientKey are ignored.
+  existingSecret: ""
   taskQueueId: _PEERDB_DEPLOYMENT_UID_
 pyroscope:
   enabled: false
