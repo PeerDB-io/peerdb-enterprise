@@ -71,6 +71,10 @@ A Helm chart for Kubernetes
 | pgo.resources.controller.requests.memory | string | `"512Mi"` |  |
 | pgo.singleNamespace | bool | `true` |  |
 | schema.create.enabled | bool | `true` |  |
+| schema.create.initContainerResources.limits.cpu | int | `1` |  |
+| schema.create.initContainerResources.limits.memory | string | `"1Gi"` |  |
+| schema.create.initContainerResources.requests.cpu | float | `0.5` |  |
+| schema.create.initContainerResources.requests.memory | string | `"512Mi"` |  |
 | schema.create.resources.limits.cpu | float | `0.5` |  |
 | schema.create.resources.limits.memory | string | `"512Mi"` |  |
 | schema.create.resources.requests.cpu | float | `0.5` |  |
