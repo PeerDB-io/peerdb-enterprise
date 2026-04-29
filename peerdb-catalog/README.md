@@ -1,6 +1,6 @@
 # peerdb-catalog
 
-![Version: 0.9.14](https://img.shields.io/badge/Version-0.9.14-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.36.17](https://img.shields.io/badge/AppVersion-v0.36.17-informational?style=flat-square)
+![Version: 0.9.15](https://img.shields.io/badge/Version-0.9.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.36.17](https://img.shields.io/badge/AppVersion-v0.36.17-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -71,6 +71,10 @@ A Helm chart for Kubernetes
 | pgo.resources.controller.requests.memory | string | `"512Mi"` |  |
 | pgo.singleNamespace | bool | `true` |  |
 | schema.create.enabled | bool | `true` |  |
+| schema.create.initContainerResources.limits.cpu | int | `1` |  |
+| schema.create.initContainerResources.limits.memory | string | `"1Gi"` |  |
+| schema.create.initContainerResources.requests.cpu | float | `0.5` |  |
+| schema.create.initContainerResources.requests.memory | string | `"512Mi"` |  |
 | schema.create.resources.limits.cpu | float | `0.5` |  |
 | schema.create.resources.limits.memory | string | `"512Mi"` |  |
 | schema.create.resources.requests.cpu | float | `0.5` |  |

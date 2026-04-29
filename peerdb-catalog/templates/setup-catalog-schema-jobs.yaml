@@ -101,15 +101,15 @@ spec:
             - mountPath: /mounted/ca-file
               name: db-ssl-certificate
           {{- end }}
-        {{- end }}
-          {{- with .Values.schema.resources }}
+          {{- with $.Values.schema.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.schema.containerSecurityContext }}
+          {{- with $.Values.schema.containerSecurityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+        {{- end }}
       containers:
         {{- range $store := (list "default" "visibility") }}
         {{- $storeConfig := index $credentialStore $store }}
@@ -160,15 +160,15 @@ spec:
             - mountPath: /mounted/ca-file
               name: db-ssl-certificate
           {{- end }}
-        {{- end }}
-          {{- with .Values.schema.resources }}
+          {{- with $.Values.schema.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.schema.containerSecurityContext }}
+          {{- with $.Values.schema.containerSecurityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+        {{- end }}
       {{- if $temporalValues.tls.enabled }}
       volumes:
         - name: db-ssl-certificate
@@ -303,15 +303,15 @@ spec:
             - mountPath: /mounted/ca-file
               name: db-ssl-certificate
           {{- end }}
-        {{- end }}
-          {{- with .Values.schema.resources }}
+          {{- with $.Values.schema.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.schema.containerSecurityContext }}
+          {{- with $.Values.schema.containerSecurityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+        {{- end }}
       {{- if $temporalValues.tls.enabled }}
       volumes:
         - name: db-ssl-certificate
