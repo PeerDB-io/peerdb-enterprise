@@ -66,6 +66,7 @@ temporal:
   releaseName: _PEERDB_TEMPORAL_RELEASE_NAME_
   clientCert: _PEERDB_TEMPORAL_CLIENT_CERT_
   clientKey: _PEERDB_TEMPORAL_CLIENT_KEY_
+  tlsServerName: ""
   taskQueueId: _PEERDB_DEPLOYMENT_UID_
 pyroscope:
   enabled: false

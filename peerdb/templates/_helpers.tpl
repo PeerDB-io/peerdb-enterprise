@@ -65,6 +65,10 @@
   value: {{ .Values.temporal.namespace }}
 
 {{- if not .Values.temporal.deploy.enabled }}
+{{- with .Values.temporal.tlsServerName }}
+- name: TEMPORAL_TLS_SERVER_NAME
+  value: {{ . | quote }}
+{{- end }}
 - name: TEMPORAL_CLIENT_CERT
   value: {{ .Values.temporal.clientCert }}
 - name: TEMPORAL_CLIENT_KEY
