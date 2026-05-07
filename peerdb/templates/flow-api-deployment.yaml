@@ -39,6 +39,7 @@ spec:
       {{- include "pods.affinity" (list $ "flowApi") | nindent 6 }}
       {{- include "pods.nodeSelector" (list $ "flowApi") | nindent 6 }}
       {{- include "pods.tolerations" (list $ "flowApi") | nindent 6 }}
+      {{- include "pods.topologySpreadConstraints" (list $ "flowApi") | nindent 6 }}
       {{- include "pods.imagePullSecrets" (list $ "flowApi") | nindent 6 }}
       {{- include "pods.priorityClassName" (list $ "flowApi") | nindent 6 }}
 

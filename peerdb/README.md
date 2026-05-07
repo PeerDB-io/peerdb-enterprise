@@ -62,12 +62,13 @@ Install PeerDB along with Temporal.
 | catalog.pgPassword | string | `"_PG_PASSWORD_"` | catalog password - autofilled if using in-cluster catalog, else pulled from .env |
 | catalog.pgPort | string | `"_PG_PORT_"` | catalog port - autofilled if using in-cluster catalog, else pulled from .env |
 | catalog.pgUser | string | `"_PG_USER_"` | catalog user - autofilled if using in-cluster catalog, else pulled from .env |
-| common | object | `{"pods":{"affinity":{},"imagePullSecrets":[],"nodeSelector":{},"priorityClassName":"","tolerations":[]}}` | Common values for all peerdb components that will be merged with the specific component values |
+| common | object | `{"pods":{"affinity":{},"imagePullSecrets":[],"nodeSelector":{},"priorityClassName":"","tolerations":[],"topologySpreadConstraints":[]}}` | Common values for all peerdb components that will be merged with the specific component values |
 | common.pods.affinity | object | `{}` | Affinity that will be applied to all the peerdb components additively |
 | common.pods.imagePullSecrets | list | `[]` | Image pull secrets that will be applied to all the peerdb components additively |
 | common.pods.nodeSelector | object | `{}` | Node selector that will be applied to all the peerdb components additively |
 | common.pods.priorityClassName | string | `""` | Priority class name to be applied to all peerdb components (can be overridden per component) |
 | common.pods.tolerations | list | `[]` | Tolerations that will be applied to all the peerdb components additively |
+| common.pods.topologySpreadConstraints | list | `[]` | Topology spread constraints that will be applied to all the peerdb components additively |
 | datadog.clusterAgent.createPodDisruptionBudget | bool | `true` |  |
 | datadog.clusterAgent.enabled | bool | `true` |  |
 | datadog.clusterAgent.replicas | int | `2` |  |
@@ -95,6 +96,7 @@ Install PeerDB along with Temporal.
 | flowApi.pods.nodeSelector | object | `{}` |  |
 | flowApi.pods.priorityClassName | string | `""` | Priority class name for flowApi pods |
 | flowApi.pods.tolerations | list | `[]` |  |
+| flowApi.pods.topologySpreadConstraints | list | `[]` | flowApi topology spread constraints. See https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/ |
 | flowApi.replicaCount | int | `4` |  |
 | flowApi.resources.limits.cpu | float | `0.5` |  |
 | flowApi.resources.limits.ephemeral-storage | string | `"4Gi"` |  |
@@ -122,6 +124,7 @@ Install PeerDB along with Temporal.
 | flowSnapshotWorker.pods.nodeSelector | object | `{}` |  |
 | flowSnapshotWorker.pods.priorityClassName | string | `""` | Priority class name for flowSnapshotWorker pods |
 | flowSnapshotWorker.pods.tolerations | list | `[]` |  |
+| flowSnapshotWorker.pods.topologySpreadConstraints | list | `[]` | flowSnapshotWorker topology spread constraints. See https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/ |
 | flowSnapshotWorker.replicaCount | int | `1` |  |
 | flowSnapshotWorker.resources.limits.cpu | int | `1` |  |
 | flowSnapshotWorker.resources.limits.ephemeral-storage | string | `"16Gi"` |  |
@@ -148,6 +151,7 @@ Install PeerDB along with Temporal.
 | flowWorker.pods.nodeSelector | object | `{}` |  |
 | flowWorker.pods.priorityClassName | string | `""` | Priority class name for flowWorker pods |
 | flowWorker.pods.tolerations | list | `[]` |  |
+| flowWorker.pods.topologySpreadConstraints | list | `[]` | flowWorker topology spread constraints. See https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/ |
 | flowWorker.replicaCount | int | `2` |  |
 | flowWorker.resources.limits.cpu | int | `4` |  |
 | flowWorker.resources.limits.ephemeral-storage | string | `"128Gi"` |  |
@@ -161,6 +165,7 @@ Install PeerDB along with Temporal.
 | global.peerdb.lowCost.nodeSelector | object | `{}` | Node selector that will be applied to all the lowCost=true peerdb components additively |
 | global.peerdb.lowCost.priorityClassName | string | `""` | Priority class name to be applied to all lowCost=true peerdb components (can be overridden per component) |
 | global.peerdb.lowCost.tolerations | list | `[]` | Tolerations that will be applied to all the lowCost=true peerdb components additively |
+| global.peerdb.lowCost.topologySpreadConstraints | list | `[]` | Topology spread constraints that will be applied to all the lowCost=true peerdb components additively |
 | peerdb.credentials.password | string | `"peerdb"` |  |
 | peerdb.credentials.passwordExistingSecret | string | `""` | Use this existing secret for PeerDB Server Password. Must have `SERVER_PEERDB_PASSWORD` key. |
 | peerdb.deployment.annotations | object | `{}` | annotations that will be applied to the peerdb-server deployment, NOT the pods |
@@ -178,6 +183,7 @@ Install PeerDB along with Temporal.
 | peerdb.pods.nodeSelector | object | `{}` |  |
 | peerdb.pods.priorityClassName | string | `""` | Priority class name for peerdb-server pods |
 | peerdb.pods.tolerations | list | `[]` |  |
+| peerdb.pods.topologySpreadConstraints | list | `[]` | peerdb-server topology spread constraints. See https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/ |
 | peerdb.replicaCount | int | `4` |  |
 | peerdb.resources.limits.cpu | float | `0.5` |  |
 | peerdb.resources.limits.ephemeral-storage | string | `"4Gi"` |  |
@@ -218,6 +224,7 @@ Install PeerDB along with Temporal.
 | peerdbUI.pods.nodeSelector | object | `{}` |  |
 | peerdbUI.pods.priorityClassName | string | `""` | Priority class name for peerdbUI pods |
 | peerdbUI.pods.tolerations | list | `[]` |  |
+| peerdbUI.pods.topologySpreadConstraints | list | `[]` | peerdbUI topology spread constraints. See https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/ |
 | peerdbUI.replicaCount | int | `4` |  |
 | peerdbUI.resources.limits.cpu | float | `0.5` |  |
 | peerdbUI.resources.limits.ephemeral-storage | string | `"4Gi"` |  |
