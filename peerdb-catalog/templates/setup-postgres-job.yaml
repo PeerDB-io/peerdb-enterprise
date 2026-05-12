@@ -67,6 +67,10 @@ spec:
               name: "go-source-files"
             - mountPath: "/build"
               name: "go-build-files"
+          {{- with .Values.schema.create.initContainerResources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
       containers:
         - name: "temporal-schema-create"
           image: "{{ .Values.schema.setup.pods.schemaCreate.repository }}:{{ .Values.schema.setup.pods.schemaCreate.tag }}"
