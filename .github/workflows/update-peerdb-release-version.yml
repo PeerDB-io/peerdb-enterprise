@@ -37,7 +37,7 @@ jobs:
         run: |
           echo "STABLE_PEERDB_VERSION=stable-${{ env.PEERDB_VERSION }}" >> $GITHUB_ENV
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           token: '${{ secrets.DEVOPS_BOT_GITHUB_TOKEN }}'
       - name: Update PeerDB version
@@ -51,7 +51,7 @@ jobs:
           git diff --exit-code || echo "changes=true" >> $GITHUB_OUTPUT
       - name: Get next version
         if: ${{ steps.update-peerdb-version.outputs.changes == 'true' }}
-        uses: reecetech/version-increment@2024.10.1
+        uses: reecetech/version-increment@a29aa752dc3b8118a2dc2ed93faf0e95a73a9c7e # 2024.10.1
         id: version
         with:
           scheme: semver
