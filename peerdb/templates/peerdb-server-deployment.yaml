@@ -71,6 +71,7 @@ spec:
         {{- end }}
         livenessProbe:
           tcpSocket:
+            host: {{ .Values.peerdb.tcpSocketProbeHost | quote }}
             port: api
           initialDelaySeconds: 10
           periodSeconds: 15
@@ -80,6 +81,7 @@ spec:
         # Use init-container instead: https://stackoverflow.com/questions/51079849/kubernetes-wait-for-other-pod-to-be-ready
         readinessProbe:
           tcpSocket:
+            host: {{ .Values.peerdb.tcpSocketProbeHost | quote }}
             port: api
           initialDelaySeconds: 10
           periodSeconds: 15

@@ -356,6 +356,8 @@ peerdbUI:
 peerdb:
   enabled: true
   extraEnv: []
+  # -- TCP probe host. Leave empty to probe the Pod IP, including IPv6 Pod IPs.
+  tcpSocketProbeHost: ""
   lowCost: true
   pods:
     nodeSelector: {}
