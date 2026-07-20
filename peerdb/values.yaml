@@ -442,7 +442,7 @@ authentication:
     annotations: {}
   image:
     repository: nginx
-    tag: latest
+    tag: latest@sha256:5a88c9c45479443d7be2eadc894b4ed0a9801bae03d97a5760ae13b5c2005942
     pullPolicy: Always
   resources:
     requests:
