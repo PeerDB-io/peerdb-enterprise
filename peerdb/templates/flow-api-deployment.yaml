@@ -43,6 +43,23 @@ spec:
       {{- include "pods.imagePullSecrets" (list $ "flowApi") | nindent 6 }}
       {{- include "pods.priorityClassName" (list $ "flowApi") | nindent 6 }}
 
+      {{- if eq (include "flowApi.migrations.enabled" .) "true" }}
+      initContainers:
+      - name: flow-api-migrate
+        image: "{{ .Values.flowApi.image.repository }}:{{ .Values.flowApi.version | default .Values.peerdb.version }}"
+        imagePullPolicy: {{ .Values.flowApi.image.pullPolicy }}
+        command: ["/home/peerdb/peer-flow", "migrate"]
+        env:
+        {{- include "catalog.pgConf" . | nindent 8 }}
+        {{- include "aws.config" . | nindent 8 }}
+        {{- with .Values.flowApi.extraEnv -}}
+        {{ . | toYaml | nindent 8}}
+        {{- end }}
+        {{- with .Values.flowApi.resources }}
+        resources: {{ toYaml . | nindent 10 }}
+        {{- end }}
+      {{- end }}
+
       containers:
       - name: flow-api
         image: "{{ .Values.flowApi.image.repository }}:{{ .Values.flowApi.version | default .Values.peerdb.version }}"

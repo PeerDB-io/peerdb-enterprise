@@ -417,3 +417,13 @@ app.kubernetes.io/part-of: {{ .Chart.Name }}
 app.kubernetes.io/component: {{ . }}
 app: {{ . }}
 {{- end -}}
+
+{{/*
+Catalog schema migrations moved from peerdb-server (refinery) to flow-api (goose) in PeerDB v0.37.6.
+Returns "true" when peerdb.version is v0.37.6 or newer (or the tag has no version), else "false".
+flow-api runs goose in an init container when "true"; peerdb-server runs refinery when "false".
+*/}}
+{{- define "flowApi.migrations.enabled" -}}
+{{- $semver := regexFind "[0-9]+\\.[0-9]+\\.[0-9]+" (toString .Values.peerdb.version) -}}
+{{- if and $semver (semverCompare "< 0.37.6" $semver) -}}false{{- else -}}true{{- end -}}
+{{- end -}}
