@@ -66,6 +66,9 @@ spec:
         # flow server config
         - name: PEERDB_FLOW_SERVER_ADDRESS
           value: "http://flow-api:{{ .Values.flowApi.service.port }}"
+        # refinery migrations are off whenever flow-api runs goose migrations
+        - name: PEERDB_MIGRATIONS_DISABLED
+          value: {{ include "flowApi.migrations.enabled" . | quote }}
         {{- with .Values.peerdb.extraEnv -}}
         {{ . | toYaml | nindent 8}}
         {{- end }}
