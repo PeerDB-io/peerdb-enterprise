@@ -1,6 +1,6 @@
 # peerdb-catalog
 
-![Version: 0.9.19](https://img.shields.io/badge/Version-0.9.19-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.37.12](https://img.shields.io/badge/AppVersion-v0.37.12-informational?style=flat-square)
+![Version: 0.9.20](https://img.shields.io/badge/Version-0.9.20-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.37.13](https://img.shields.io/badge/AppVersion-v0.37.13-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
