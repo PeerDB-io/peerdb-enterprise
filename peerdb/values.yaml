@@ -466,6 +466,17 @@ authentication:
       hostPattern: ""
 temporal-deploy:
   server:
+    image:
+      # -- Temporal server version. Pinned so that upgrading this chart does not upgrade Temporal:
+      # Temporal supports upgrading only one minor version at a time (1.24 -> 1.25 -> ... -> 1.30).
+      # Keep `temporal-deploy.admintools.image.tag` and `peerdb-catalog`'s `temporal.admintools.image.tag` on the same version.
+      tag: 1.24.2
+    # -- Use the temporal chart's entrypoint script. Temporal server images 1.30.0+ no longer ship `dockerize`;
+    # when moving to 1.30.0 or later, set this to `true` and `configMapsToMount` to `"both"`.
+    useEntrypointScript: false
+    # -- Which server config to mount: `"dockerize"` (images up to 1.29.x), `"sprig"` (1.30.0+, needs `setConfigFilePath: true`),
+    # or `"both"` (needs `useEntrypointScript: true`; picks the right one at startup).
+    configMapsToMount: "dockerize"
     dynamicConfig:
       limit.maxIDLength:
         - value: 255
@@ -651,6 +662,9 @@ temporal-deploy:
                       - web
               topologyKey: topology.kubernetes.io/zone
   admintools:
+    image:
+      # -- Temporal admin-tools image, used by the schema job. Match it to `temporal-deploy.server.image.tag`.
+      tag: 1.24.2.1-tctl-1.18.1-cli-0.13.2
     resources:
       requests:
         cpu: 100m
