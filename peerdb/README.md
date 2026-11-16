@@ -1,6 +1,6 @@
 # peerdb
 
-![Version: 0.9.20](https://img.shields.io/badge/Version-0.9.20-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.37.15](https://img.shields.io/badge/AppVersion-v0.37.15-informational?style=flat-square)
+![Version: 0.10.0](https://img.shields.io/badge/Version-0.10.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.37.15](https://img.shields.io/badge/AppVersion-v0.37.15-informational?style=flat-square)
 
 Install PeerDB along with Temporal.
 
@@ -15,7 +15,7 @@ Install PeerDB along with Temporal.
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://go.temporal.io/helm-charts | temporal-deploy(temporal) | 0.44.0 |
+| https://go.temporal.io/helm-charts | temporal-deploy(temporal) | 0.74.0 |
 | https://grafana.github.io/helm-charts | pyroscope | 1.0.3 |
 | https://helm.datadoghq.com | datadog(datadog) | 3.52.0 |
 
@@ -264,6 +264,7 @@ Install PeerDB along with Temporal.
 | serviceAccount.create | bool | `true` |  |
 | serviceAccount.extraAnnotations | object | `{}` | Extra annotations that will be applied to the service account, e.g. for AWS IAM roles, or GCP Workload Identity |
 | serviceAccount.name | string | `nil` |  |
+| temporal-deploy.admintools.image.tag | string | `"1.24.2.1-tctl-1.18.1-cli-0.13.2"` | Temporal admin-tools image, used by the schema job. Match it to `temporal-deploy.server.image.tag`. |
 | temporal-deploy.admintools.resources.limits.cpu | string | `"500m"` |  |
 | temporal-deploy.admintools.resources.limits.memory | string | `"256Mi"` |  |
 | temporal-deploy.admintools.resources.requests.cpu | string | `"100m"` |  |
@@ -296,6 +297,7 @@ Install PeerDB along with Temporal.
 | temporal-deploy.server.config.persistence.visibility.sql.port | int | `5432` |  |
 | temporal-deploy.server.config.persistence.visibility.sql.tls.enabled | string | `"_TEMPORAL_SSL_MODE_"` |  |
 | temporal-deploy.server.config.persistence.visibility.sql.user | string | `"_USERNAME_"` |  |
+| temporal-deploy.server.configMapsToMount | string | `"dockerize"` | Which server config to mount: `"dockerize"` (images up to 1.29.x), `"sprig"` (1.30.0+, needs `setConfigFilePath: true`), or `"both"` (needs `useEntrypointScript: true`; picks the right one at startup). |
 | temporal-deploy.server.dynamicConfig."frontend.enableUpdateWorkflowExecution"[0].value | bool | `true` |  |
 | temporal-deploy.server.dynamicConfig."limit.maxIDLength"[0].constraints | object | `{}` |  |
 | temporal-deploy.server.dynamicConfig."limit.maxIDLength"[0].value | int | `255` |  |
@@ -311,6 +313,7 @@ Install PeerDB along with Temporal.
 | temporal-deploy.server.history.resources.limits.memory | string | `"2Gi"` |  |
 | temporal-deploy.server.history.resources.requests.cpu | int | `1` |  |
 | temporal-deploy.server.history.resources.requests.memory | string | `"1.5Gi"` |  |
+| temporal-deploy.server.image.tag | string | `"1.24.2"` | Temporal server version. Pinned so that upgrading this chart does not upgrade Temporal: Temporal supports upgrading only one minor version at a time (1.24 -> 1.25 -> ... -> 1.30). Keep `temporal-deploy.admintools.image.tag` and `peerdb-catalog`'s `temporal.admintools.image.tag` on the same version. |
 | temporal-deploy.server.matching.affinity | object | `{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app.kubernetes.io/name","operator":"In","values":["temporal-deploy"]},{"key":"app.kubernetes.io/component","operator":"In","values":["matching"]}]},"topologyKey":"topology.kubernetes.io/zone"},"weight":100}]}}` | `matching` pod affinity, the default is to schedule matching pods on different nodes than other matching pods for High Availability |
 | temporal-deploy.server.matching.replicaCount | int | `1` |  |
 | temporal-deploy.server.matching.resources.limits.cpu | float | `1.5` |  |
@@ -322,6 +325,7 @@ Install PeerDB along with Temporal.
 | temporal-deploy.server.resources.limits.memory | string | `"4Gi"` |  |
 | temporal-deploy.server.resources.requests.cpu | int | `2` |  |
 | temporal-deploy.server.resources.requests.memory | string | `"2Gi"` |  |
+| temporal-deploy.server.useEntrypointScript | bool | `false` | Use the temporal chart's entrypoint script. Temporal server images 1.30.0+ no longer ship `dockerize`; when moving to 1.30.0 or later, set this to `true` and `configMapsToMount` to `"both"`. |
 | temporal-deploy.server.worker.affinity | object | `{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app.kubernetes.io/name","operator":"In","values":["temporal-deploy"]},{"key":"app.kubernetes.io/component","operator":"In","values":["worker"]}]},"topologyKey":"topology.kubernetes.io/zone"},"weight":100}]}}` | `worker` pod affinity, the default is to schedule worker pods on different nodes than other worker pods for High Availability |
 | temporal-deploy.server.worker.replicaCount | int | `1` |  |
 | temporal-deploy.server.worker.resources.limits.cpu | float | `1.5` |  |
