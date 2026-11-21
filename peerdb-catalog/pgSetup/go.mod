@@ -1,12 +1,10 @@
 module github.com/PeerDB-io/pgSetup
 
-go 1.24.0
-
-toolchain go1.24.12
+go 1.25.0
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
-	github.com/jackc/pgx/v5 v5.6.0
+	github.com/jackc/pgx/v5 v5.9.2
 	github.com/sirupsen/logrus v1.9.3
 )
 
